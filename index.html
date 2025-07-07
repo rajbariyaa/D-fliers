@@ -4,14 +4,14 @@
     <title>D-Fliers by HTML5 UP</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-    
+
     <!-- Google Font: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/main.css" />
 
-    <!-- Internal Font Style Override -->
+    <!-- Internal Font and Style Overrides -->
     <style>
         body, input, select, textarea {
             font-family: 'Inter', sans-serif;
@@ -20,6 +20,7 @@
             color: #333;
             text-transform: none !important;
         }
+
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Inter', sans-serif;
             font-weight: 600;
@@ -27,16 +28,36 @@
             color: #222;
             text-transform: none !important;
         }
+
         a {
             text-decoration: none;
             color: #007acc;
         }
+
         a:hover {
             text-decoration: underline;
         }
+
         p, li, span, div {
             font-weight: 400;
             text-transform: none !important;
+        }
+
+        .button {
+            background-color: #007acc;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: none !important;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #005f99;
         }
     </style>
 </head>
@@ -82,10 +103,8 @@
                     <div class="col-4 col-12-medium">
                         <section>
                             <h2>Welcome to D-Fliers!</h2>
-                            <p>This project researches the use of machine learning and artificial intelligence to predict weather-induced flight delays and improve climate resilience in airspace management. Using historical flight data, real-time weather reports, and air traffic information, we have developed an AI predictive model to estimate potential disruptions which cause flight delays.</p>
-                            <footer class="controls">
-                                <a href="https://www.flightaware.com/" class="button" target="_blank">Click to View Project Plan</a>
-                            </footer>
+                            <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
+                            <a href="https://www.flightaware.com/" class="button" target="_blank">Click to View Project Plan</a>
                         </section>
                     </div>
 
@@ -142,4 +161,10 @@
                         </section>
                     </div>
 
-                        </article>
+                </div> <!-- end of main-row -->
+            </div> <!-- end of container -->
+        </div> <!-- end of main -->
+
+    </div> <!-- end of page-wrapper -->
+</body>
+</html>
