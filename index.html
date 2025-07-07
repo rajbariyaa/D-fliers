@@ -1,155 +1,181 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>D-Fliers | AI Flight Delay Predictor</title>
+    <title>D-Fliers by HTML5 UP</title>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- Font -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    
+    <!-- Google Font: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
+    <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/main.css" />
 
+    <!-- Internal Font Style Override -->
     <style>
-        body {
+        body, input, select, textarea {
             font-family: 'Inter', sans-serif;
-            background-color: #fdfdfd;
-            color: #222;
-            font-size: 16px;
+            font-size: 14.3px;
+            line-height: 1.6;
+            color: #333;
+            text-transform: none !important;
         }
-
         h1, h2, h3, h4, h5, h6 {
-            color: #003366;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #222;
+            text-transform: none !important;
         }
-
         a {
-            color: #005bbb;
+            text-decoration: none;
+            color: #007acc;
         }
-
         a:hover {
-            color: #003366;
+            text-decoration: underline;
         }
-
-        header#header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-        }
-
-        #logo-wrapper {
-            display: flex;
-            align-items: center;
-        }
-
-        #logo-wrapper img {
-            height: 60px;
-            margin-right: 15px;
-        }
-
-        #banner {
-            background-color: #003366;
-            color: white;
-            text-align: center;
-            padding: 2.5rem 1rem;
-        }
-
-        .small-image-list img, .big-image-list img {
-            max-height: 120px;
-            border-radius: 8px;
-        }
-
-        .small-image-list h4, .big-image-list h3 {
-            font-size: 1.1rem;
-        }
-
-        .button {
-            background-color: #005bbb;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 5px;
-        }
-
-        .button:hover {
-            background-color: #003366;
-        }
-
-        footer.controls {
-            margin-top: 1rem;
-        }
-
-        @media screen and (max-width: 768px) {
-            #logo-wrapper img {
-                height: 40px;
-            }
+        p, li, span, div {
+            font-weight: 400;
+            text-transform: none !important;
         }
     </style>
 </head>
 <body>
-<div id="page-wrapper">
-    <!-- Header -->
-    <div id="header-wrapper">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <header id="header">
-                        <div id="logo-wrapper">
-                            <img src="images/D-filers logo.jpeg" alt="Team Logo" />
+    <div id="page-wrapper">
+
+        <!-- Header -->
+        <div id="header-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <header id="header">
                             <h1><a href="index.html" id="logo">D-Fliers</a></h1>
-                        </div>
-                        <nav id="nav">
-                            <a href="index.html" class="current-page-item">Homepage</a>
-                            <a href="twocolumn1.html">Two Column #1</a>
-                            <a href="twocolumn2.html">Two Column #2</a>
-                            <a href="onecolumn.html">One Column</a>
-                            <a href="threecolumn.html">Three Column</a>
-                        </nav>
-                    </header>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Banner -->
-    <div id="banner-wrapper">
-        <div class="container">
-            <div id="banner">
-                <h2>D-Fliers</h2>
-                <p>AI-Driven Flight Delay Prediction Model for Climate-Resilient Airspace Management</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main -->
-    <div id="main">
-        <div class="container">
-            <div class="row main-row">
-                <!-- Content Sections Here -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <div id="footer-wrapper">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div id="copyright">
-                        &copy; D-Fliers. All rights reserved. | Design inspired by <a href="http://html5up.net">HTML5 UP</a>
+                            <nav id="nav">
+                                <a href="index.html" class="current-page-item">Homepage</a>
+                                <a href="twocolumn1.html">Two Column #1</a>
+                                <a href="twocolumn2.html">Two Column #2</a>
+                                <a href="onecolumn.html">One Column</a>
+                                <a href="threecolumn.html">Three Column</a>
+                            </nav>
+                        </header>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Scripts -->
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/browser.min.js"></script>
-<script src="assets/js/breakpoints.min.js"></script>
-<script src="assets/js/util.js"></script>
-<script src="assets/js/main.js"></script>
-</body>
-</html>
+        <!-- Banner -->
+        <div id="banner-wrapper">
+            <div class="container">
+                <div id="banner">
+                    <h2>D-Fliers</h2>
+                    <span>AI-Driven Flight Delay Prediction Model for Climate-Resilient Airspace Management</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main -->
+        <div id="main">
+            <div class="container">
+                <div class="row main-row">
+
+                    <!-- Project Description -->
+                    <div class="col-4 col-12-medium">
+                        <section>
+                            <h2>Welcome to D-Fliers!</h2>
+                            <p>This project researches the use of machine learning and artificial intelligence to predict weather-induced flight delays and improve climate resilience in airspace management. Using historical flight data, real-time weather reports, and air traffic information, we have developed an AI predictive model to estimate potential disruptions which cause flight delays.</p>
+                            <footer class="controls">
+                                <a href="https://www.flightaware.com/" class="button" target="_blank">Click to View Project Plan</a>
+                            </footer>
+                        </section>
+                    </div>
+
+                    <!-- Meet The Team -->
+                    <div class="col-4 col-6-medium col-12-small">
+                        <section>
+                            <h2>Meet The Team</h2>
+                            <ul class="small-image-list">
+                                <li>
+                                    <a href="#"><img src="images/wisdom.jpg" alt="" class="left" /></a>
+                                    <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
+                                    <p>Team Member 1 - I will edit this later</p>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="images/Tahia(1).jpg" alt="" class="left" /></a>
+                                    <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
+                                    <p>Team Member 2 - I will edit this later.</p>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="images/mypic.jpeg" alt="" class="left" /></a>
+                                    <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
+                                    <p>Team Member 3 - I will edit this later</p>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="images/BB picture.PNG" alt="" class="left" /></a>
+                                    <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
+                                    <p>Team Member 4 - I will edit this later</p>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="images/pic1.jpg" alt="" class="left" /></a>
+                                    <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+                                    <p>High School Teacher - I will edit this later</p>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+
+                    <!-- Meet The Mentors -->
+                    <div class="col-4 col-6-medium col-12-small">
+                        <section>
+                            <h2>Meet The Mentors</h2>
+                            <ul class="small-image-list">
+                                <li>
+                                    <a href="#"><img src="images/pic2.jpg" alt="" class="left" /></a>
+                                    <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
+                                    <p>Faculty Mentor – Research lead in AI for aerospace systems.</p>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="images/pic2.jpg" alt="" class="left" /></a>
+                                    <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
+                                    <p>Graduate Mentor – Specialist in machine learning models and data engineering.</p>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+
+                    <!-- Placeholder Content (Unedited) -->
+                    <div class="col-6 col-12-medium">
+                        <section>
+                            <h2>An assortment of pictures and text</h2>
+                            <p>Duis neque nisi, dapibus sed mattis quis, rutrum et accumsan. Suspendisse nibh. Suspendisse vitae magna eget odio amet mollis justo facilisis quis.</p>
+                            <ul class="big-image-list">
+                                <li>
+                                    <a href="#"><img src="images/pic3.jpg" alt="" class="left" /></a>
+                                    <h3>Magna Gravida Dolore</h3>
+                                    <p>Varius nibh. Suspendisse vitae magna eget et amet mollis justo facilisis amet quis.</p>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="images/pic4.jpg" alt="" class="left" /></a>
+                                    <h3>Magna Gravida Dolore</h3>
+                                    <p>Varius nibh. Suspendisse vitae magna eget et amet mollis justo facilisis amet quis.</p>
+                                </li>
+                                <li>
+                                    <a href="#"><img src="images/pic5.jpg" alt="" class="left" /></a>
+                                    <h3>Magna Gravida Dolore</h3>
+                                    <p>Varius nibh. Suspendisse vitae magna eget et amet mollis justo facilisis amet quis.</p>
+                                </li>
+                            </ul>
+                        </section>
+                    </div>
+
+                    <!-- Blog Post -->
+                    <div class="col-6 col-12-medium">
+                        <article class="blog-post">
+                            <h2>Just another blog post</h2>
+                            <a class="comments" href="#">33 comments</a>
+                            <a href="#"><img src="images/pic6.jpg" alt="" class="top blog-post-image" /></a>
+                            <h3>Magna Gravida Dolore</h3>
+                            <p>Aenean non massa sapien. In hac habitasse platea dictumst. Maecenas sodales purus et nulla sodales aliquam. Aenean ac porttitor metus. Phasellus blandit turpis in leo scelerisque mollis. Nulla venenatis ipsum nec est porta rhoncus. Cras elit magna, hendrerit nec consectetur in.</p>
+                            <footer class="controls">
+                                <a href="#" class="button">Continue Reading</a>
+                            </footer>
+                        </article>
