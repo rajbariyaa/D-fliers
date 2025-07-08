@@ -66,18 +66,9 @@
             margin: 0 auto 20px auto;
         }
 
-        .team-heading {
-            text-align: center;
-            font-size: 24px;
-            margin: 40px 0 20px 0;
-            font-weight: 600;
-            color: #222;
-        }
-
         .team-scroll-wrapper {
             overflow-x: auto;
             padding-bottom: 10px;
-            padding-left: 5px; /* shifts content left */
         }
 
         .team-section {
@@ -114,16 +105,16 @@
             font-size: 13px;
         }
 
-        /* Hide scrollbar */
+        /* Optional: Hide scrollbar on WebKit browsers */
         .team-scroll-wrapper::-webkit-scrollbar {
             display: none;
         }
-
         .team-scroll-wrapper {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
 
+        /* Fix for banner subtitle text-transform to keep original size/color */
         #banner span {
             text-transform: none !important;
         }
@@ -173,62 +164,53 @@
                     <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
                 </section>
 
-                <!-- Meet the Team -->
-                <h2 class="team-heading">Meet the Team</h2>
-
-                <!-- Team Section -->
+                <!-- Scrollable Team Section -->
                 <div class="team-scroll-wrapper">
                     <section class="team-section">
-                        <!-- 1: Dr. Kofi Nyarko -->
+                        <!-- Dr. Kofi Nyarko -->
                         <div class="team-member">
                             <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
                             <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
-                            <p>Faculty Mentor</p>
                         </div>
 
-                        <!-- 2: Abiola Ajala -->
+                        <!-- Abiola Ajala -->
                         <div class="team-member">
                             <img src="images/pic3.jpg" alt="Abiola Ajala" />
                             <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
-                            <p>Graduate Mentor</p>
                         </div>
 
-                        <!-- 3: Wisdom -->
+                        <!-- Wisdom Agbeve -->
                         <div class="team-member">
                             <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
                             <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
-                            <p>Team Member</p>
                         </div>
 
-                        <!-- 4: Tahia -->
+                        <!-- Tahia Tajnim -->
                         <div class="team-member">
                             <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
                             <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
-                            <p>Team Member</p>
                         </div>
 
-                        <!-- 5: Raj -->
+                        <!-- Raj Bariya -->
                         <div class="team-member">
                             <img src="images/mypic.jpeg" alt="Raj Bariya" />
                             <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
-                            <p>Team Member</p>
                         </div>
 
-                        <!-- 6: Quyme Brice -->
+                        <!-- Quyme Brice -->
                         <div class="team-member">
-                            <img src="images/bb_picture.png" alt="Quyme Brice" />
+                            <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
                             <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
-                            <p>Team Member</p>
                         </div>
 
-                        <!-- 7: Kyle Burke -->
+                        <!-- Kyle Burke -->
                         <div class="team-member">
                             <img src="images/pic1.jpg" alt="Kyle Burke" />
                             <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
-                            <p>High School Teacher</p>
                         </div>
                     </section>
                 </div>
+
             </div>
         </div>
     </div>
