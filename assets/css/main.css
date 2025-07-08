@@ -100,11 +100,11 @@ input, select, textarea {
 	}
 
 	h1 {
-		text-transform: lowercase;
+		text-transform: capitalize;
 	}
 
 	h2 {
-		text-transform: lowercase;
+		text-transform: capitalize;
 		font-size: 1.6em;
 		letter-spacing: -1px;
 		margin-bottom: 1em;
