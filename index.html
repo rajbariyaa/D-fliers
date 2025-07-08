@@ -75,19 +75,19 @@
             display: flex;
             flex-wrap: nowrap;
             justify-content: flex-start;
-            gap: 15px; /* Reduced gap to push items closer */
+            gap: 15px; /* reduced gap for better fit */
             min-width: max-content;
-            padding-left: 10px; /* Add a little left padding */
+            padding-left: 10px; /* slight left padding */
         }
 
         .team-member {
-            width: 160px; /* Slightly narrower */
+            width: 160px; /* slightly smaller width */
             text-align: center;
             flex-shrink: 0;
         }
 
         .team-member img {
-            width: 110px; /* Slightly smaller images */
+            width: 110px; /* smaller image size */
             height: 110px;
             object-fit: cover;
             border-radius: 50%;
@@ -104,6 +104,14 @@
 
         .team-member p {
             font-size: 13px;
+        }
+
+        /* Banner subtitle styling */
+        #banner span {
+            text-transform: none !important;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #222;
         }
 
         /* Optional: Hide scrollbar on WebKit browsers */
