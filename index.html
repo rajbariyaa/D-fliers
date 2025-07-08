@@ -69,6 +69,8 @@
         .team-scroll-wrapper {
             overflow-x: auto;
             padding-bottom: 10px;
+            border: 1px solid #ccc; /* Debug border */
+            white-space: nowrap; /* Ensure no wrapping */
         }
 
         .team-section {
@@ -83,6 +85,9 @@
             width: 180px;
             text-align: center;
             flex-shrink: 0;
+            border: 1px dashed #aaa; /* Debug border */
+            padding: 5px;
+            background-color: #fff;
         }
 
         .team-member img {
@@ -105,7 +110,7 @@
             font-size: 13px;
         }
 
-        /* Optional: Hide scrollbar on WebKit browsers */
+        /* Hide scrollbar on WebKit browsers */
         .team-scroll-wrapper::-webkit-scrollbar {
             display: none;
         }
