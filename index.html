@@ -75,20 +75,19 @@
             display: flex;
             flex-wrap: nowrap;
             justify-content: flex-start;
-            gap: 15px; /* reduced gap for better fit */
+            gap: 30px;
             min-width: max-content;
-            padding-left: 10px; /* slight left padding */
         }
 
         .team-member {
-            width: 160px; /* slightly smaller width */
+            width: 180px;
             text-align: center;
             flex-shrink: 0;
         }
 
         .team-member img {
-            width: 110px; /* smaller image size */
-            height: 110px;
+            width: 120px;
+            height: 120px;
             object-fit: cover;
             border-radius: 50%;
             margin-bottom: 10px;
@@ -106,14 +105,6 @@
             font-size: 13px;
         }
 
-        /* Banner subtitle styling */
-        #banner span {
-            text-transform: none !important;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #222;
-        }
-
         /* Optional: Hide scrollbar on WebKit browsers */
         .team-scroll-wrapper::-webkit-scrollbar {
             display: none;
@@ -121,6 +112,11 @@
         .team-scroll-wrapper {
             -ms-overflow-style: none;
             scrollbar-width: none;
+        }
+
+        /* Fix for banner subtitle text-transform to keep original size/color */
+        #banner span {
+            text-transform: none !important;
         }
     </style>
 </head>
