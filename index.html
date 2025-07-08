@@ -11,13 +11,14 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/main.css" />
 
-    <!-- Internal Font and Style Overrides -->
+    <!-- Internal Style Overrides -->
     <style>
         body, input, select, textarea {
             font-family: 'Inter', sans-serif;
             font-size: 16px;
             line-height: 1.6;
             color: #333;
+            background-color: #f9fbfd;
             text-transform: none !important;
         }
 
@@ -59,6 +60,35 @@
         .button:hover {
             background-color: #005f99;
         }
+
+        .team-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .team-member {
+            width: 200px;
+            text-align: center;
+        }
+
+        .team-member img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .team-member h4 {
+            margin: 10px 0 5px 0;
+        }
+
+        .team-member p {
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -97,72 +127,53 @@
         <!-- Main -->
         <div id="main">
             <div class="container">
-                <div class="row main-row">
+                <!-- Project Description -->
+                <section>
+                    <h2>Welcome to D-Fliers!</h2>
+                    <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
+                    <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
+                </section>
 
-                    <!-- Project Description -->
-                    <div class="col-4 col-12-medium">
-                        <section>
-                            <h2>Welcome to D-Fliers!</h2>
-                            <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
-                            <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
-                        </section>
+                <!-- All Team Members & Mentors Horizontally -->
+                <section class="team-section">
+                    <div class="team-member">
+                        <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
+                        <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
+                        <p>Team Member 1 - I will edit this later</p>
                     </div>
-
-                    <!-- Meet The Team -->
-                    <div class="col-4 col-6-medium col-12-small">
-                        <section>
-                            <h2>Meet The Team</h2>
-                            <ul class="small-image-list">
-                                <li>
-                                    <a href="#"><img src="images/wisdom.jpg" alt="" class="left" /></a>
-                                    <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
-                                    <p>Team Member 1 - I will edit this later</p>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="images/Tahia(1).jpg" alt="" class="left" /></a>
-                                    <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
-                                    <p>Team Member 2 - I will edit this later.</p>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="images/mypic.jpeg" alt="" class="left" /></a>
-                                    <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
-                                    <p>Team Member 3 - I will edit this later</p>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="images/BB picture.PNG" alt="" class="left" /></a>
-                                    <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
-                                    <p>Team Member 4 - I will edit this later</p>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="images/pic1.jpg" alt="" class="left" /></a>
-                                    <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
-                                    <p>High School Teacher - I will edit this later</p>
-                                </li>
-                            </ul>
-                        </section>
+                    <div class="team-member">
+                        <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
+                        <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
+                        <p>Team Member 2 - I will edit this later</p>
                     </div>
-                    <div class="col-4 col-6-medium col-12-small">
-                        <section>
-                            <h2>Meet The Mentors</h2>
-                            <ul class="small-image-list">
-                                <li>
-                                    <a href="#"><img src="images/pic2.jpg" alt="" class="left" /></a>
-                                    <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
-                                    <p>Faculty Mentor – Research lead in AI for aerospace systems.</p>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="images/pic2.jpg" alt="" class="left" /></a>
-                                    <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
-                                    <p>Graduate Mentor – Specialist in machine learning models and data engineering.</p>
-                                </li>
-                            </ul>
-                        </section>
+                    <div class="team-member">
+                        <img src="images/mypic.jpeg" alt="Raj Bariya" />
+                        <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
+                        <p>Team Member 3 - I will edit this later</p>
                     </div>
-
-                </div> <!-- end of main-row -->
-            </div> <!-- end of container -->
-        </div> <!-- end of main -->
-
-    </div> <!-- end of page-wrapper -->
+                    <div class="team-member">
+                        <img src="images/BB picture.PNG" alt="Quyme Brice" />
+                        <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
+                        <p>Team Member 4 - I will edit this later</p>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/pic1.jpg" alt="Kyle Burke" />
+                        <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+                        <p>High School Teacher - I will edit this later</p>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
+                        <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
+                        <p>Faculty Mentor – AI for aerospace systems</p>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/pic2.jpg" alt="Abiola Ajala" />
+                        <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
+                        <p>Graduate Mentor – Machine learning & data engineering</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
