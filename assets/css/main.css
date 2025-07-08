@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Ubuntu+Condensed");
+cvvcc@import url("https://fonts.googleapis.com/css?family=Ubuntu+Condensed");
 
 /*
 	Minimaxing by HTML5 UP
@@ -1623,7 +1623,7 @@ input, select, textarea {
 			font-size: 1.6em;
 			color: #fff;
 			letter-spacing: -1px;
-			text-transform: lowercase;
+			text-transform: capitalize;
 			opacity: 0.8;
 		}
 
