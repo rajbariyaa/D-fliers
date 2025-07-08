@@ -8,81 +8,71 @@
     <!-- Google Font: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="assets/css/main.css" />
-
-    <!-- Internal Style Overrides -->
     <style>
-        body, input, select, textarea {
+        body {
             font-family: 'Inter', sans-serif;
             font-size: 16px;
             line-height: 1.6;
             color: #333;
             background-color: #f9fbfd;
-            text-transform: none !important;
+            margin: 0; padding: 0;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Inter', sans-serif;
+        h2 {
             font-weight: 600;
             letter-spacing: -0.5px;
             color: #222;
-            text-transform: none !important;
+            text-align: center;
+            margin-bottom: 15px;
         }
 
-        a {
-            text-decoration: none;
-            color: #007acc;
+        .project-intro {
+            max-width: 700px;
+            margin: 40px auto 50px auto;
+            text-align: center;
         }
 
-        a:hover {
-            text-decoration: underline;
+        .project-intro p {
+            margin-bottom: 20px;
         }
 
         .button {
             background-color: #007acc;
             color: white;
-            padding: 10px 18px;
-            border: none;
+            padding: 10px 20px;
             border-radius: 6px;
-            display: inline-block;
             font-weight: 600;
             font-size: 14px;
+            text-decoration: none;
+            display: inline-block;
             text-transform: none !important;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
         .button:hover {
             background-color: #005f99;
         }
 
-        .project-intro {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .project-intro p {
-            max-width: 700px;
-            margin: 0 auto 20px auto;
-        }
-
+        /* Team container: scroll horizontally if overflow */
         .team-scroll-wrapper {
             overflow-x: auto;
-            padding-bottom: 10px;
+            padding: 10px 20px 30px 20px;
+            max-width: 100%;
+            box-sizing: border-box;
         }
 
+        /* Flex container for team members */
         .team-section {
             display: flex;
             flex-wrap: nowrap;
-            justify-content: flex-start;
             gap: 30px;
-            min-width: max-content;
+            min-width: max-content; /* important to avoid wrapping */
+            justify-content: flex-start;
         }
 
         .team-member {
-            width: 180px;
+            flex: 0 0 180px; /* fixed width so all show horizontally */
             text-align: center;
-            flex-shrink: 0;
         }
 
         .team-member img {
@@ -90,25 +80,28 @@
             height: 120px;
             object-fit: cover;
             border-radius: 50%;
-            margin-bottom: 10px;
+            margin: 0 auto 10px auto;
             display: block;
-            margin-left: auto;
-            margin-right: auto;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
         }
 
         .team-member h4 {
-            margin: 10px 0 5px 0;
+            margin: 10px 0 6px 0;
             font-size: 16px;
+            font-weight: 600;
         }
 
         .team-member p {
             font-size: 13px;
+            color: #555;
+            margin: 0;
         }
 
+        /* Hide horizontal scrollbar on Webkit */
         .team-scroll-wrapper::-webkit-scrollbar {
             display: none;
         }
-
+        /* Hide scrollbar on Firefox */
         .team-scroll-wrapper {
             -ms-overflow-style: none;
             scrollbar-width: none;
@@ -116,108 +109,60 @@
     </style>
 </head>
 <body>
-    <div id="page-wrapper">
 
-        <!-- Header -->
-        <div id="header-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <header id="header">
-                            <h1><a href="index.html" id="logo">D-Fliers</a></h1>
-                            <nav id="nav">
-                                <a href="index.html" class="current-page-item">Homepage</a>
-                                <a href="twocolumn1.html">Two Column #1</a>
-                                <a href="twocolumn2.html">Two Column #2</a>
-                                <a href="onecolumn.html">One Column</a>
-                                <a href="threecolumn.html">Three Column</a>
-                            </nav>
-                        </header>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Banner -->
-        <div id="banner-wrapper">
-            <div class="container">
-                <div id="banner">
-                    <h2>D-Fliers</h2>
-                    <span>AI-Driven Flight Delay Prediction Model for Climate-Resilient Airspace Management</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main -->
-        <div id="main">
-            <div class="container">
-
-                <!-- Project Intro -->
-                <section class="project-intro">
-                    <h2>Welcome to D-Fliers!</h2>
-                    <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
-                    <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
-                </section>
-
-                <!-- Scrollable Team Section -->
-                <div class="team-scroll-wrapper">
-                    <section class="team-section">
-
-                        <!-- Dr. Kofi Nyarko -->
-                        <div class="team-member">
-                            <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
-                            <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
-                            <p>Faculty Mentor – AI for aerospace systems</p>
-                        </div>
-
-                        <!-- Abiola Ajala -->
-                        <div class="team-member">
-                            <img src="images/pic2.jpg" alt="Abiola Ajala" />
-                            <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
-                            <p>Graduate Mentor – Machine learning & data engineering</p>
-                        </div>
-
-                        <!-- Wisdom Agbeve -->
-                        <div class="team-member">
-                            <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
-                            <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
-                            <p>Team Member 1 - I will edit this later</p>
-                        </div>
-
-                        <!-- Tahia Tajnim -->
-                        <div class="team-member">
-                            <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
-                            <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
-                            <p>Team Member 2 - I will edit this later</p>
-                        </div>
-
-                        <!-- Raj Bariya -->
-                        <div class="team-member">
-                            <img src="images/mypic.jpeg" alt="Raj Bariya" />
-                            <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
-                            <p>Team Member 3 - I will edit this later</p>
-                        </div>
-
-                        <!-- Quyme Brice -->
-                        <div class="team-member">
-                            <img src="images/BB picture.PNG" alt="Quyme Brice" />
-                            <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
-                            <p>Team Member 4 - I will edit this later</p>
-                        </div>
-
-                        <!-- Quyme Brice -->
-                        <div class="team-member">
-                            <img src="images/BB picture.PNG" alt="Quyme Brice" />
-                            <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
-                            <p>Team Member 4 - I will edit this later</p>
-                        </div>
-
-
-                    </section>
-                </div>
-
-            </div>
-        </div>
+    <div class="project-intro">
+        <h2>Welcome to D-Fliers!</h2>
+        <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
+        <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank" class="button">Click to View Project Plan</a>
     </div>
+
+    <div class="team-scroll-wrapper">
+        <section class="team-section">
+
+            <div class="team-member">
+                <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
+                <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
+                <p>Faculty Mentor – AI for aerospace systems</p>
+            </div>
+
+            <div class="team-member">
+                <img src="images/pic2.jpg" alt="Abiola Ajala" />
+                <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
+                <p>Graduate Mentor – Machine learning & data engineering</p>
+            </div>
+
+            <div class="team-member">
+                <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
+                <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
+                <p>Team Member 1 - I will edit this later</p>
+            </div>
+
+            <div class="team-member">
+                <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
+                <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
+                <p>Team Member 2 - I will edit this later</p>
+            </div>
+
+            <div class="team-member">
+                <img src="images/mypic.jpeg" alt="Raj Bariya" />
+                <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
+                <p>Team Member 3 - I will edit this later</p>
+            </div>
+
+            <div class="team-member">
+                <img src="images/BB picture.PNG" alt="Quyme Brice" />
+                <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
+                <p>Team Member 4 - I will edit this later</p>
+            </div>
+
+            <div class="team-member">
+                <img src="images/pic1.jpg" alt="Kyle Burke" />
+                <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+                <p>High School Teacher - I will edit this later</p>
+            </div>
+
+        </section>
+    </div>
+
 </body>
 </html>
