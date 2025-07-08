@@ -67,30 +67,28 @@
         }
 
         .team-scroll-wrapper {
-            overflow-x: auto;
+            overflow-x: visible; /* no scroll */
             padding-bottom: 10px;
         }
 
         .team-section {
             display: flex;
-            flex-wrap: nowrap;
+            flex-wrap: nowrap; /* keep in one row */
             justify-content: flex-start;
-            gap: 30px;
-            min-width: max-content;
-
-            /* Shift images left so Kyle shows */
-            margin-left: -180px;
+            gap: 20px;
+            min-width: 0;
+            /* remove min-width: max-content */
         }
 
         .team-member {
-            width: 180px;
+            width: 140px;  /* reduced width */
             text-align: center;
             flex-shrink: 0;
         }
 
         .team-member img {
-            width: 120px;
-            height: 120px;
+            width: 90px;   /* reduced image size */
+            height: 90px;
             object-fit: cover;
             border-radius: 50%;
             margin-bottom: 10px;
@@ -101,7 +99,10 @@
 
         .team-member h4 {
             margin: 10px 0 5px 0;
-            font-size: 16px;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .team-member p {
@@ -158,7 +159,7 @@
                     <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
                 </section>
 
-                <!-- Scrollable Team Section -->
+                <!-- Team Section -->
                 <div class="team-scroll-wrapper">
                     <section class="team-section">
                         <!-- Dr. Kofi Nyarko -->
