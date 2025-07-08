@@ -67,28 +67,27 @@
         }
 
         .team-scroll-wrapper {
-            overflow-x: visible; /* no scroll */
+            overflow-x: auto;
             padding-bottom: 10px;
         }
 
         .team-section {
             display: flex;
-            flex-wrap: nowrap; /* keep in one row */
+            flex-wrap: nowrap;
             justify-content: flex-start;
-            gap: 20px;
-            min-width: 0;
-            /* remove min-width: max-content */
+            gap: 30px;
+            min-width: max-content;
         }
 
         .team-member {
-            width: 140px;  /* reduced width */
+            width: 180px;
             text-align: center;
             flex-shrink: 0;
         }
 
         .team-member img {
-            width: 90px;   /* reduced image size */
-            height: 90px;
+            width: 120px;
+            height: 120px;
             object-fit: cover;
             border-radius: 50%;
             margin-bottom: 10px;
@@ -99,19 +98,33 @@
 
         .team-member h4 {
             margin: 10px 0 5px 0;
-            font-size: 14px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 16px;
         }
 
         .team-member p {
             font-size: 13px;
         }
 
+        /* Optional: Hide scrollbar on WebKit browsers */
+        .team-scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+
+        .team-scroll-wrapper {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
         /* Fix for banner subtitle text-transform to keep original size/color */
         #banner span {
             text-transform: none !important;
+        }
+
+        /* Logo image next to header text */
+        #logo img {
+            height: 40px;
+            vertical-align: middle;
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -124,7 +137,12 @@
                 <div class="row">
                     <div class="col-12">
                         <header id="header">
-                            <h1><a href="index.html" id="logo">D-Fliers</a></h1>
+                            <h1 id="logo">
+                                <a href="index.html">
+                                    <img src="assets/css/images/logo.jpeg" alt="D-Fliers Logo" />
+                                    D-Fliers
+                                </a>
+                            </h1>
                             <nav id="nav">
                                 <a href="index.html" class="current-page-item">Homepage</a>
                                 <a href="twocolumn1.html">Two Column #1</a>
@@ -154,12 +172,12 @@
 
                 <!-- Project Intro -->
                 <section class="project-intro">
-                    <h2>Meet The Team!</h2>
+                    <h2>Welcome to D-Fliers!</h2>
                     <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
                     <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
                 </section>
 
-                <!-- Team Section -->
+                <!-- Scrollable Team Section -->
                 <div class="team-scroll-wrapper">
                     <section class="team-section">
                         <!-- Dr. Kofi Nyarko -->
