@@ -8,6 +8,10 @@
     <!-- Google Font: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/main.css" />
+
+    <!-- Internal Style Overrides -->
     <style>
         body, input, select, textarea {
             font-family: 'Inter', sans-serif;
@@ -62,32 +66,17 @@
             margin: 0 auto 20px auto;
         }
 
-        /* Key fix starts here */
         .team-scroll-wrapper {
             overflow-x: auto;
             padding-bottom: 10px;
-            /* For testing: make scrollbar visible */
-            scrollbar-width: auto;  /* Firefox */
-            -ms-overflow-style: auto; /* IE 10+ */
         }
-
-        /* Remove hiding scrollbar during development, so you can see and test scroll */
-        /* .team-scroll-wrapper::-webkit-scrollbar {
-            display: none;
-        } */
 
         .team-section {
             display: flex;
             flex-wrap: nowrap;
+            justify-content: flex-start;
             gap: 30px;
-
-            /* Width = 7 members * 180px + 6 gaps * 30px */
-            /* 7 * 180 = 1260px + 6 * 30 = 180px; total 1440px */
-            min-width: 1440px;
-
-            /* Added padding to prevent cut off */
-            padding-left: 10px;
-            padding-right: 20px;
+            min-width: max-content;
         }
 
         .team-member {
@@ -116,6 +105,16 @@
             font-size: 13px;
         }
 
+        /* Optional: Hide scrollbar on WebKit browsers */
+        .team-scroll-wrapper::-webkit-scrollbar {
+            display: none;
+        }
+        .team-scroll-wrapper {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Fix for banner subtitle text-transform to keep original size/color */
         #banner span {
             text-transform: none !important;
         }
