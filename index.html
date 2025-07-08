@@ -50,6 +50,7 @@
             font-size: 14px;
             text-transform: none !important;
             transition: background-color 0.3s;
+            cursor: pointer;
         }
 
         .button:hover {
@@ -69,6 +70,12 @@
         .team-scroll-wrapper {
             overflow-x: auto;
             padding-bottom: 10px;
+            /* Hide scrollbar */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .team-scroll-wrapper::-webkit-scrollbar {
+            display: none;  /* Chrome, Safari, Opera */
         }
 
         .team-section {
@@ -76,13 +83,15 @@
             flex-wrap: nowrap;
             justify-content: flex-start;
             gap: 30px;
-            min-width: max-content;
+            min-width: max-content; /* Prevent flex items from wrapping */
+            padding-bottom: 10px;
         }
 
         .team-member {
-            width: 180px;
+            width: 160px;
             text-align: center;
-            flex-shrink: 0;
+            flex-shrink: 0; /* Prevent shrinking */
+            scroll-snap-align: start; /* Optional: for smooth snap scrolling */
         }
 
         .team-member img {
@@ -94,6 +103,11 @@
             display: block;
             margin-left: auto;
             margin-right: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .team-member img:hover {
+            transform: scale(1.05);
         }
 
         .team-member h4 {
@@ -103,15 +117,19 @@
 
         .team-member p {
             font-size: 13px;
+            color: #555;
         }
 
-        /* Optional: Hide scrollbar on WebKit browsers */
-        .team-scroll-wrapper::-webkit-scrollbar {
-            display: none;
-        }
-        .team-scroll-wrapper {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+        /* Responsive tweak: On very small screens, allow wrapping */
+        @media (max-width: 500px) {
+            .team-section {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .team-member {
+                width: 45%; /* roughly two per row */
+                margin-bottom: 20px;
+            }
         }
     </style>
 </head>
@@ -162,41 +180,49 @@
                 <!-- Scrollable Team Section -->
                 <div class="team-scroll-wrapper">
                     <section class="team-section">
-                        <div class="team-member">
-                            <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
-                            <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
-                            <p>Team Member 1 - I will edit this later</p>
-                        </div>
-                        <div class="team-member">
-                            <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
-                            <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
-                            <p>Team Member 2 - I will edit this later</p>
-                        </div>
-                        <div class="team-member">
-                            <img src="images/mypic.jpeg" alt="Raj Bariya" />
-                            <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
-                            <p>Team Member 3 - I will edit this later</p>
-                        </div>
-                        <div class="team-member">
-                            <img src="images/BB picture.PNG" alt="Quyme Brice" />
-                            <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
-                            <p>Team Member 4 - I will edit this later</p>
-                        </div>
-                        <div class="team-member">
-                            <img src="images/pic1.jpg" alt="Kyle Burke" />
-                            <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
-                            <p>High School Teacher - I will edit this later</p>
-                        </div>
+
                         <div class="team-member">
                             <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
                             <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
                             <p>Faculty Mentor – AI for aerospace systems</p>
                         </div>
+
                         <div class="team-member">
                             <img src="images/pic2.jpg" alt="Abiola Ajala" />
                             <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
                             <p>Graduate Mentor – Machine learning & data engineering</p>
                         </div>
+
+                        <div class="team-member">
+                            <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
+                            <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
+                            <p>Team Member 1 - I will edit this later</p>
+                        </div>
+
+                        <div class="team-member">
+                            <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
+                            <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
+                            <p>Team Member 2 - I will edit this later</p>
+                        </div>
+
+                        <div class="team-member">
+                            <img src="images/mypic.jpeg" alt="Raj Bariya" />
+                            <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
+                            <p>Team Member 3 - I will edit this later</p>
+                        </div>
+
+                        <div class="team-member">
+                            <img src="images/BB picture.PNG" alt="Quyme Brice" />
+                            <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
+                            <p>Team Member 4 - I will edit this later</p>
+                        </div>
+
+                        <div class="team-member">
+                            <img src="images/pic1.jpg" alt="Kyle Burke" />
+                            <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+                            <p>High School Teacher - I will edit this later</p>
+                        </div>
+
                     </section>
                 </div>
 
