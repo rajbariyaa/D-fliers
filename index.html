@@ -66,6 +66,11 @@
             margin: 0 auto 20px auto;
         }
 
+        .team-heading {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
         .team-scroll-wrapper {
             overflow-x: auto;
             padding-bottom: 10px;
@@ -77,6 +82,7 @@
             justify-content: flex-start;
             gap: 30px;
             min-width: max-content;
+            white-space: nowrap;
         }
 
         .team-member {
@@ -105,114 +111,127 @@
             font-size: 13px;
         }
 
-        /* Optional: Hide scrollbar on WebKit browsers */
         .team-scroll-wrapper::-webkit-scrollbar {
             display: none;
         }
+
         .team-scroll-wrapper {
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
 
-        /* Fix for banner subtitle text-transform to keep original size/color */
         #banner span {
             text-transform: none !important;
         }
     </style>
 </head>
 <body>
-    <div id="page-wrapper">
+<div id="page-wrapper">
 
-        <!-- Header -->
-        <div id="header-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <header id="header">
-                            <h1><a href="index.html" id="logo">D-Fliers</a></h1>
-                            <nav id="nav">
-                                <a href="index.html" class="current-page-item">Homepage</a>
-                                <a href="twocolumn1.html">Two Column #1</a>
-                                <a href="twocolumn2.html">Two Column #2</a>
-                                <a href="onecolumn.html">One Column</a>
-                                <a href="threecolumn.html">Three Column</a>
-                            </nav>
-                        </header>
-                    </div>
+    <!-- Header -->
+    <div id="header-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <header id="header">
+                        <h1><a href="index.html" id="logo">D-Fliers</a></h1>
+                        <nav id="nav">
+                            <a href="index.html" class="current-page-item">Homepage</a>
+                            <a href="twocolumn1.html">Two Column #1</a>
+                            <a href="twocolumn2.html">Two Column #2</a>
+                            <a href="onecolumn.html">One Column</a>
+                            <a href="threecolumn.html">Three Column</a>
+                        </nav>
+                    </header>
                 </div>
-            </div>
-        </div>
-
-        <!-- Banner -->
-        <div id="banner-wrapper">
-            <div class="container">
-                <div id="banner">
-                    <h2>D-Fliers</h2>
-                    <span>AI-Driven Flight Delay Prediction Model for Climate-Resilient Airspace Management</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main -->
-        <div id="main">
-            <div class="container">
-
-                <!-- Project Intro -->
-                <section class="project-intro">
-                    <h2>Welcome to D-Fliers!</h2>
-                    <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
-                    <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
-                </section>
-
-                <!-- Scrollable Team Section -->
-                <div class="team-scroll-wrapper">
-                    <section class="team-section">
-                        <!-- Dr. Kofi Nyarko -->
-                        <div class="team-member">
-                            <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
-                            <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
-                        </div>
-
-                        <!-- Abiola Ajala -->
-                        <div class="team-member">
-                            <img src="images/pic3.jpg" alt="Abiola Ajala" />
-                            <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
-                        </div>
-
-                        <!-- Wisdom Agbeve -->
-                        <div class="team-member">
-                            <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
-                            <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
-                        </div>
-
-                        <!-- Tahia Tajnim -->
-                        <div class="team-member">
-                            <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
-                            <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
-                        </div>
-
-                        <!-- Raj Bariya -->
-                        <div class="team-member">
-                            <img src="images/mypic.jpeg" alt="Raj Bariya" />
-                            <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
-                        </div>
-
-                        <!-- Quyme Brice -->
-                        <div class="team-member">
-                            <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
-                            <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
-                        </div>
-
-                        <!-- Kyle Burke -->
-                        <div class="team-member">
-                            <img src="images/pic1.jpg" alt="Kyle Burke" />
-                            <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
-                        </div>
-                    </section>
-                </div>
-
             </div>
         </div>
     </div>
+
+    <!-- Banner -->
+    <div id="banner-wrapper">
+        <div class="container">
+            <div id="banner">
+                <h2>D-Fliers</h2>
+                <span>AI-Driven Flight Delay Prediction Model for Climate-Resilient Airspace Management</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main -->
+    <div id="main">
+        <div class="container">
+
+            <!-- Project Intro -->
+            <section class="project-intro">
+                <h2>Welcome to D-Fliers!</h2>
+                <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
+                <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
+            </section>
+
+            <!-- Team Heading -->
+            <div class="team-heading">
+                <h2>Meet the Team</h2>
+            </div>
+
+            <!-- Scrollable Team Section -->
+            <div class="team-scroll-wrapper">
+                <section class="team-section">
+
+                    <!-- Dr. Kofi Nyarko -->
+                    <div class="team-member">
+                        <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
+                        <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
+                        <p>Faculty Mentor – AI for aerospace systems</p>
+                    </div>
+
+                    <!-- Abiola Ajala -->
+                    <div class="team-member">
+                        <img src="images/pic3.jpg" alt="Abiola Ajala" />
+                        <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
+                        <p>Graduate Mentor – Machine learning & data engineering</p>
+                    </div>
+
+                    <!-- Wisdom Agbeve -->
+                    <div class="team-member">
+                        <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
+                        <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
+                        <p>Researcher – AI model development & testing</p>
+                    </div>
+
+                    <!-- Tahia Tajnim -->
+                    <div class="team-member">
+                        <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
+                        <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
+                        <p>Researcher – Data analysis & validation</p>
+                    </div>
+
+                    <!-- Raj Bariya -->
+                    <div class="team-member">
+                        <img src="images/mypic.jpeg" alt="Raj Bariya" />
+                        <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
+                        <p>Researcher – Frontend development & dashboard</p>
+                    </div>
+
+                    <!-- Quyme Brice -->
+                    <div class="team-member">
+                        <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
+                        <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
+                        <p>Researcher – Backend & API integration</p>
+                    </div>
+
+                    <!-- Kyle Burke -->
+                    <div class="team-member">
+                        <img src="images/pic1.jpg" alt="Kyle Burke" />
+                        <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+                        <p>High School Teacher – Curriculum & support</p>
+                    </div>
+
+                </section>
+            </div>
+
+        </div>
+    </div>
+</div>
 </body>
 </html>
