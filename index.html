@@ -61,33 +61,47 @@
             background-color: #005f99;
         }
 
+        .project-intro {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .project-intro p {
+            max-width: 700px;
+            margin: 0 auto 20px auto;
+        }
+
         .team-section {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
             justify-content: center;
+            gap: 30px;
             margin-top: 30px;
         }
 
         .team-member {
-            width: 200px;
+            width: 180px;
             text-align: center;
         }
 
         .team-member img {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             object-fit: cover;
             border-radius: 50%;
             margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .team-member h4 {
             margin: 10px 0 5px 0;
+            font-size: 16px;
         }
 
         .team-member p {
-            font-size: 14px;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -127,14 +141,15 @@
         <!-- Main -->
         <div id="main">
             <div class="container">
-                <!-- Project Description -->
-                <section>
+
+                <!-- Project Intro -->
+                <section class="project-intro">
                     <h2>Welcome to D-Fliers!</h2>
                     <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
                     <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
                 </section>
 
-                <!-- All Team Members & Mentors Horizontally -->
+                <!-- Unified Team + Mentors Section -->
                 <section class="team-section">
                     <div class="team-member">
                         <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
@@ -172,6 +187,7 @@
                         <p>Graduate Mentor – Machine learning & data engineering</p>
                     </div>
                 </section>
+
             </div>
         </div>
     </div>
