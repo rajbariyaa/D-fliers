@@ -22,9 +22,10 @@
 
     body.dark-mode {
       background-color: #121212;
-      color: #eee;
+      color: #ddd;
     }
 
+    /* Headers */
     h1, h2, h3, h4, h5, h6 {
       font-family: 'Inter', sans-serif;
       font-weight: 600;
@@ -39,9 +40,10 @@
     body.dark-mode h4,
     body.dark-mode h5,
     body.dark-mode h6 {
-      color: #f0f0f0;
+      color: #eee;
     }
 
+    /* Links */
     a {
       text-decoration: none;
       color: #007acc;
@@ -56,6 +58,7 @@
       text-decoration: underline;
     }
 
+    /* Buttons */
     .button {
       background-color: #007acc;
       color: white;
@@ -71,6 +74,7 @@
       background-color: #005f99;
     }
 
+    /* Nav */
     #nav {
       display: flex;
       align-items: center;
@@ -80,8 +84,28 @@
 
     #nav a {
       text-transform: none !important;
+      color: #222;
+      transition: color 0.4s;
     }
 
+    body.dark-mode #nav a {
+      color: #a0cfff;
+    }
+
+    body.dark-mode #nav a.current-page-item {
+      color: #66b2ff;
+      font-weight: 700;
+    }
+
+    #nav a:hover {
+      color: #005f99;
+    }
+
+    body.dark-mode #nav a:hover {
+      color: #66b2ff;
+    }
+
+    /* Accordion */
     .accordion {
       background-color: #f7f9fb;
       color: #222;
@@ -111,6 +135,16 @@
       content: "\2212";
     }
 
+    body.dark-mode .accordion {
+      background-color: #1e1e1e;
+      color: #eee;
+    }
+
+    body.dark-mode .accordion:hover {
+      background-color: #333;
+    }
+
+    /* Accordion panels */
     .panel {
       padding: 0 18px;
       background-color: white;
@@ -126,47 +160,51 @@
       padding: 18px;
     }
 
-    body.dark-mode .accordion {
-      background-color: #1e1e1e;
-      color: #eee;
-    }
-
-    body.dark-mode .accordion:hover {
-      background-color: #333;
-    }
-
     body.dark-mode .panel {
       background-color: #1e1e1e;
       color: #eee;
       border-left-color: #66b2ff;
     }
 
-    /* Dark mode fixes for header nav */
-    body.dark-mode #nav a.current-page-item {
-      color: #66b2ff;
-      font-weight: 700;
+    /* Footer */
+    #footer-wrapper {
+      background-color: #f5f5f5;
+      color: #555;
+      transition: background-color 0.4s, color 0.4s;
     }
 
-    body.dark-mode #nav a {
-      color: #a0cfff;
+    body.dark-mode #footer-wrapper {
+      background-color: #222;
+      color: #bbb;
     }
 
-    body.dark-mode #nav a:hover {
-      color: #66b2ff;
+    /* Toggle container above header */
+    .toggle-container {
+      padding: 15px 20px;
+      display: flex;
+      justify-content: flex-end;
+      background-color: #f0f0f0;
+      border-bottom: 1px solid #ddd;
+      transition: background-color 0.4s;
     }
 
-    /* Toggle switch inside nav */
+    body.dark-mode .toggle-container {
+      background-color: #1b1b1b;
+      border-color: #444;
+    }
+
+    /* Toggle switch */
     .toggle-switch {
-      margin-left: auto;
       display: flex;
       align-items: center;
+      user-select: none;
     }
 
     .toggle-switch label {
-      margin-left: 8px;
+      margin-left: 10px;
       font-weight: 600;
       color: #222;
-      user-select: none;
+      cursor: pointer;
       transition: color 0.4s;
     }
 
@@ -216,6 +254,14 @@
 </head>
 <body>
 
+  <!-- Toggle above header -->
+  <div class="toggle-container">
+    <div class="toggle-switch">
+      <input type="checkbox" id="dark-mode-toggle" />
+      <label for="dark-mode-toggle" class="switch" title="Toggle Dark Mode"></label>
+    </div>
+  </div>
+
   <div id="page-wrapper">
     <!-- Header -->
     <div id="header-wrapper">
@@ -227,12 +273,6 @@
             <a href="twocolumn2.html">Dashboard</a>
             <a href="onecolumn.html">About</a>
             <a href="threecolumn.html">Contact</a>
-
-            <!-- Dark Mode Toggle -->
-            <div class="toggle-switch" title="Toggle dark mode">
-              <input type="checkbox" id="dark-mode-toggle" />
-              <label for="dark-mode-toggle" class="switch"></label>
-            </div>
           </nav>
         </header>
       </div>
