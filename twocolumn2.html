@@ -1,363 +1,207 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-  <!-- Google Font: Inter -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Main CSS -->
-  <link rel="stylesheet" href="assets/css/main.css" />
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/main.css" />
 
-  <style>
-    body, input, select, textarea {
-      font-family: 'Inter', sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
-      color: #222;
-      background-color: #fff;
-      transition: background-color 0.4s, color 0.4s;
-    }
+    <!-- Font and Color Overrides -->
+    <style>
+        body, input, select, textarea {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #222;
+            background-color: #fff;
+        }
 
-    body.dark-mode {
-      background-color: #121212;
-      color: #ddd;
-    }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #111;
+            letter-spacing: -0.5px;
+            text-transform: none !important;
+        }
 
-    /* Headers */
-    h1, h2, h3, h4, h5, h6 {
-      font-family: 'Inter', sans-serif;
-      font-weight: 600;
-      color: #111;
-      letter-spacing: -0.5px;
-      transition: color 0.4s;
-    }
+        a {
+            text-decoration: none;
+            color: #007acc;
+        }
 
-    body.dark-mode h1,
-    body.dark-mode h2,
-    body.dark-mode h3,
-    body.dark-mode h4,
-    body.dark-mode h5,
-    body.dark-mode h6 {
-      color: #eee;
-    }
+        a:hover {
+            text-decoration: underline;
+        }
 
-    /* Links */
-    a {
-      text-decoration: none;
-      color: #007acc;
-      transition: color 0.4s;
-    }
+        .button {
+            background-color: #007acc;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: none;
+            transition: background-color 0.3s;
+        }
 
-    body.dark-mode a {
-      color: #66b2ff;
-    }
+        .button:hover {
+            background-color: #005f99;
+        }
 
-    a:hover {
-      text-decoration: underline;
-    }
+        #nav a {
+            text-transform: none !important;
+        }
 
-    /* Buttons */
-    .button {
-      background-color: #007acc;
-      color: white;
-      padding: 10px 18px;
-      border: none;
-      border-radius: 6px;
-      font-weight: 600;
-      font-size: 14px;
-      transition: background-color 0.3s;
-    }
+        .accordion {
+            background-color: #f7f9fb;
+            color: #222;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
 
-    .button:hover {
-      background-color: #005f99;
-    }
+        .accordion:hover {
+            background-color: #e0efff;
+        }
 
-    /* Nav */
-    #nav {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      flex-wrap: wrap;
-    }
+        .accordion:after {
+            content: '\002B';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
 
-    #nav a {
-      text-transform: none !important;
-      color: #222;
-      transition: color 0.4s;
-    }
+        .accordion.active:after {
+            content: "\2212";
+        }
 
-    body.dark-mode #nav a {
-      color: #a0cfff;
-    }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            display: none;
+            overflow: hidden;
+            border-left: 3px solid #007acc;
+            margin-bottom: 20px;
+        }
 
-    body.dark-mode #nav a.current-page-item {
-      color: #66b2ff;
-      font-weight: 700;
-    }
-
-    #nav a:hover {
-      color: #005f99;
-    }
-
-    body.dark-mode #nav a:hover {
-      color: #66b2ff;
-    }
-
-    /* Accordion */
-    .accordion {
-      background-color: #f7f9fb;
-      color: #222;
-      cursor: pointer;
-      padding: 18px;
-      width: 100%;
-      border: none;
-      border-radius: 6px;
-      text-align: left;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 10px;
-      transition: background-color 0.3s ease, color 0.4s;
-    }
-
-    .accordion:hover {
-      background-color: #e0efff;
-    }
-
-    .accordion:after {
-      content: '\002B';
-      font-weight: bold;
-      float: right;
-    }
-
-    .accordion.active:after {
-      content: "\2212";
-    }
-
-    body.dark-mode .accordion {
-      background-color: #1e1e1e;
-      color: #eee;
-    }
-
-    body.dark-mode .accordion:hover {
-      background-color: #333;
-    }
-
-    /* Accordion panels */
-    .panel {
-      padding: 0 18px;
-      background-color: white;
-      max-height: 0;
-      overflow: hidden;
-      border-left: 3px solid #007acc;
-      margin-bottom: 20px;
-      transition: max-height 0.4s ease, padding 0.4s ease, background-color 0.4s, color 0.4s;
-      color: #222;
-    }
-
-    .panel.open {
-      padding: 18px;
-    }
-
-    body.dark-mode .panel {
-      background-color: #1e1e1e;
-      color: #eee;
-      border-left-color: #66b2ff;
-    }
-
-    /* Footer */
-    #footer-wrapper {
-      background-color: #f5f5f5;
-      color: #555;
-      transition: background-color 0.4s, color 0.4s;
-    }
-
-    body.dark-mode #footer-wrapper {
-      background-color: #222;
-      color: #bbb;
-    }
-
-    /* Toggle container above header */
-    .toggle-container {
-      padding: 15px 20px;
-      display: flex;
-      justify-content: flex-end;
-      background-color: #f0f0f0;
-      border-bottom: 1px solid #ddd;
-      transition: background-color 0.4s;
-    }
-
-    body.dark-mode .toggle-container {
-      background-color: #1b1b1b;
-      border-color: #444;
-    }
-
-    /* Toggle switch */
-    .toggle-switch {
-      display: flex;
-      align-items: center;
-      user-select: none;
-    }
-
-    .toggle-switch label {
-      margin-left: 10px;
-      font-weight: 600;
-      color: #222;
-      cursor: pointer;
-      transition: color 0.4s;
-    }
-
-    body.dark-mode .toggle-switch label {
-      color: #eee;
-    }
-
-    .toggle-switch input {
-      height: 0;
-      width: 0;
-      visibility: hidden;
-    }
-
-    .switch {
-      cursor: pointer;
-      width: 50px;
-      height: 25px;
-      background: #ccc;
-      border-radius: 25px;
-      position: relative;
-      display: inline-block;
-      transition: background-color 0.3s;
-    }
-
-    .switch::after {
-      content: '';
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      width: 21px;
-      height: 21px;
-      background: white;
-      border-radius: 50%;
-      transition: 0.3s;
-    }
-
-    input:checked + .switch {
-      background: #007acc;
-    }
-
-    input:checked + .switch::after {
-      left: calc(100% - 2px);
-      transform: translateX(-100%);
-    }
-
-  </style>
+        .panel p, .panel ul {
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
+    <div id="page-wrapper">
 
-  <!-- Toggle above header -->
-  <div class="toggle-container">
-    <div class="toggle-switch">
-      <input type="checkbox" id="dark-mode-toggle" />
-      <label for="dark-mode-toggle" class="switch" title="Toggle Dark Mode"></label>
-    </div>
-  </div>
-
-  <div id="page-wrapper">
-    <!-- Header -->
-    <div id="header-wrapper">
-      <div class="container">
-        <header id="header">
-          <nav id="nav">
-            <a href="index.html">Home</a>
-            <a href="twocolumn1.html" class="current-page-item">Research</a>
-            <a href="twocolumn2.html">Dashboard</a>
-            <a href="onecolumn.html">About</a>
-          
-          </nav>
-        </header>
-      </div>
-    </div>
-
-    <!-- Main -->
-    <div id="main">
-      <div class="container">
-
-        <button class="accordion">📄 Project Abstract</button>
-        <div class="panel">
-          <p>The D-Fliers project explores the intersection of artificial intelligence and climate data to predict flight delays. By analyzing real-time and historical weather patterns alongside flight data, our model enhances airspace resilience and supports better decision-making for airlines and passengers alike.</p>
-        </div>
-
-        <button class="accordion">🎯 Research Objectives</button>
-        <div class="panel">
-          <ul>
-            <li>Develop a machine learning model for accurate flight delay prediction</li>
-            <li>Incorporate real-time climate data to improve predictive power</li>
-            <li>Utilize explainable AI to understand feature impact and ensure transparency</li>
-            <li>Improve operational planning and passenger communication for airlines</li>
-          </ul>
-        </div>
-
-        <button class="accordion">🔬 Methodology</button>
-        <div class="panel">
-          <p>Our research uses FAA historical flight data and real-time NOAA weather data. We preprocess, clean, and engineer features to train an XGBoost regression model. Model performance is evaluated using MAE, RMSE, and R² metrics. Explainable AI tools like SHAP and LIME are integrated to interpret the influence of key variables.</p>
-          <ul>
-            <li><strong>Tools:</strong> Python, Pandas, Scikit-learn, XGBoost, SHAP, LIME</li>
-            <li><strong>Techniques:</strong> Feature engineering, cross-validation, model interpretation</li>
-          </ul>
-        </div>
-
-        <button class="accordion">📊 Preliminary Results</button>
-        <div class="panel">
-          <p>Initial results show promising predictive accuracy, with weather-related features like wind speed, temperature variance, and precipitation ranking highest in influence. SHAP visualizations reveal nuanced insights into how these features interact with delays, guiding further optimization.</p>
-        </div>
-
-        <button class="accordion">📎 Download & References</button>
-        <div class="panel">
-          <p><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">View Full Research Document</a></p>
-          <p><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a> (Model & Code)</p>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Footer -->
-    <div id="footer-wrapper">
-      <div class="container">
-        <div class="row">
-          <div class="col-12">
-            <div id="copyright">
-              &copy; Powered by D-Fliers
+        <!-- Header -->
+        <div id="header-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <header id="header">
+                            <nav id="nav">
+                                <a href="index.html">Home</a>
+                                <a href="twocolumn1.html" class="current-page-item">Research</a>
+                                <a href="twocolumn2.html">Dashboard</a>
+                                <a href="onecolumn.html">About</a>
+                                <a href="threecolumn.html">Contact</a>
+                            </nav>
+                        </header>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
+
+        <!-- Main -->
+        <div id="main">
+            <div class="container">
+
+                <button class="accordion">📄 Project Abstract</button>
+                <div class="panel">
+                    <p>The D-Fliers project explores the intersection of artificial intelligence and climate data to predict flight delays. By analyzing real-time and historical weather patterns alongside flight data, our model enhances airspace resilience and supports better decision-making for airlines and passengers alike.</p>
+                </div>
+
+                <button class="accordion">🎯 Research Objectives</button>
+                <div class="panel">
+                    <ul>
+                        <li>Develop a machine learning model for accurate flight delay prediction</li>
+                        <li>Incorporate real-time climate data to improve predictive power</li>
+                        <li>Utilize explainable AI to understand feature impact and ensure transparency</li>
+                        <li>Improve operational planning and passenger communication for airlines</li>
+                    </ul>
+                </div>
+
+                <button class="accordion">🔬 Methodology</button>
+                <div class="panel">
+                    <p>Our research uses FAA historical flight data and real-time NOAA weather data. We preprocess, clean, and engineer features to train an XGBoost regression model. Model performance is evaluated using MAE, RMSE, and R² metrics. Explainable AI tools like SHAP and LIME are integrated to interpret the influence of key variables.</p>
+                    <ul>
+                        <li><strong>Tools:</strong> Python, Pandas, Scikit-learn, XGBoost, SHAP, LIME</li>
+                        <li><strong>Techniques:</strong> Feature engineering, cross-validation, model interpretation</li>
+                    </ul>
+                </div>
+
+                <button class="accordion">📊 Preliminary Results</button>
+                <div class="panel">
+                    <p>Initial results show promising predictive accuracy, with weather-related features like wind speed, temperature variance, and precipitation ranking highest in influence. SHAP visualizations reveal nuanced insights into how these features interact with delays, guiding further optimization.</p>
+                </div>
+
+                <button class="accordion">📎 Download & References</button>
+                <div class="panel">
+                    <p><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">View Full Research Document</a></p>
+                    <p><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a> (Model & Code)</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div id="footer-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div id="copyright">
+                            &copy; Powered by D-Fliers
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-  </div>
 
-  <!-- Scripts -->
-  <script>
-    // Accordion toggle logic
-    const acc = document.getElementsByClassName("accordion");
-    for (let i = 0; i < acc.length; i++) {
-      acc[i].addEventListener("click", function () {
-        this.classList.toggle("active");
-        const panel = this.nextElementSibling;
-        if (panel.classList.contains("open")) {
-          panel.style.maxHeight = null;
-          panel.classList.remove("open");
-        } else {
-          panel.classList.add("open");
-          panel.style.maxHeight = panel.scrollHeight + "px";
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        const acc = document.getElementsByClassName("accordion");
+        for (let i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
         }
-      });
-    }
-
-    // Dark mode toggle logic
-    const darkToggle = document.getElementById('dark-mode-toggle');
-    darkToggle.addEventListener('change', function () {
-      document.body.classList.toggle('dark-mode', this.checked);
-    });
-  </script>
+    </script>
 
 </body>
 </html>
