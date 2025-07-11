@@ -57,6 +57,22 @@
         #nav a {
             text-transform: none !important;
         }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            margin-bottom: 16px;
+        }
+
+        .section p, .section ul {
+            margin-bottom: 16px;
+        }
+
+        .section ul {
+            padding-left: 20px;
+        }
     </style>
 </head>
 <body>
@@ -84,117 +100,46 @@
         <!-- Main -->
         <div id="main">
             <div class="container">
-                <div class="row main-row">
-                    <div class="col-8 col-12-medium">
-                        <section>
-                            <h2>Two Column #1 (right-hand sidebar)</h2>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                            <p>Mauris risus nulla, pulvinar vitae sagittis a, pharetra nec tellus...</p>
-                            <p>Nulla ut tortor quam, a luctus nunc. Nulla condimentum diam...</p>
-                        </section>
-                    </div>
-                    <div class="col-4 col-12-medium">
-                        <section>
-                            <h2>Who are you guys?</h2>
-                            <ul class="small-image-list">
-                                <li>
-                                    <a href="#"><img src="images/pic2.jpg" alt="" class="left" /></a>
-                                    <h4>Jane Anderson</h4>
-                                    <p>Varius nibh. Suspendisse vitae magna eget et amet mollis justo facilisis amet quis.</p>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="images/pic1.jpg" alt="" class="left" /></a>
-                                    <h4>James Doe</h4>
-                                    <p>Vitae magna eget odio amet mollis justo facilisis amet quis. Sed sagittis consequat.</p>
-                                </li>
-                            </ul>
-                        </section>
+                <section class="section">
+                    <h2>Project Abstract</h2>
+                    <p>The D-Fliers project explores the intersection of artificial intelligence and climate data to predict flight delays. By analyzing real-time and historical weather patterns alongside flight data, our model enhances airspace resilience and supports better decision-making for airlines and passengers alike.</p>
+                </section>
 
-                        <section>
-                            <h2>How about some links?</h2>
-                            <div class="row">
-                                <div class="col-6 col-12-small">
-                                    <ul class="link-list">
-                                        <li><a href="#">Sed neque nisi consequat</a></li>
-                                        <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                        <li><a href="#">Quis accumsan lorem</a></li>
-                                        <li><a href="#">Suspendisse varius ipsum</a></li>
-                                        <li><a href="#">Eget et amet consequat</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-6 col-12-small">
-                                    <ul class="link-list">
-                                        <li><a href="#">Quis accumsan lorem</a></li>
-                                        <li><a href="#">Sed neque nisi consequat</a></li>
-                                        <li><a href="#">Eget et amet consequat</a></li>
-                                        <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                        <li><a href="#">Vitae magna sed dolore</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                </div>
+                <section class="section">
+                    <h2>Research Objectives</h2>
+                    <ul>
+                        <li>Develop a machine learning model for accurate flight delay prediction</li>
+                        <li>Incorporate real-time climate data to improve predictive power</li>
+                        <li>Utilize explainable AI to understand feature impact and ensure transparency</li>
+                        <li>Improve operational planning and passenger communication for airlines</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>Methodology</h2>
+                    <p>Our research uses FAA historical flight data and real-time NOAA weather data. We preprocess, clean, and engineer features to train an XGBoost regression model. Model performance is evaluated using MAE, RMSE, and R² metrics. Explainable AI tools like SHAP and LIME are integrated to interpret the influence of key variables.</p>
+                    <ul>
+                        <li><strong>Tools:</strong> Python, Pandas, Scikit-learn, XGBoost, SHAP, LIME</li>
+                        <li><strong>Techniques:</strong> Feature engineering, cross-validation, model interpretation</li>
+                    </ul>
+                </section>
+
+                <section class="section">
+                    <h2>Preliminary Results</h2>
+                    <p>Initial results show promising predictive accuracy, with weather-related features like wind speed, temperature variance, and precipitation ranking highest in influence. SHAP visualizations reveal nuanced insights into how these features interact with delays, guiding further optimization.</p>
+                </section>
+
+                <section class="section">
+                    <h2>Download & References</h2>
+                    <p><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">View Full Research Document</a></p>
+                    <p><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a> (Model & Code)</p>
+                </section>
             </div>
         </div>
 
         <!-- Footer -->
         <div id="footer-wrapper">
             <div class="container">
-                <div class="row">
-                    <div class="col-8 col-12-medium">
-                        <section>
-                            <h2>How about a truckload of links?</h2>
-                            <div class="row">
-                                <div class="col-3 col-6-medium col-12-small">
-                                    <ul class="link-list">
-                                        <li><a href="#">Sed neque nisi consequat</a></li>
-                                        <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                        <li><a href="#">Quis accumsan lorem</a></li>
-                                        <li><a href="#">Suspendisse varius ipsum</a></li>
-                                        <li><a href="#">Eget et amet consequat</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-3 col-6-medium col-12-small">
-                                    <ul class="link-list">
-                                        <li><a href="#">Quis accumsan lorem</a></li>
-                                        <li><a href="#">Sed neque nisi consequat</a></li>
-                                        <li><a href="#">Eget et amet consequat</a></li>
-                                        <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                        <li><a href="#">Vitae magna sed dolore</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-3 col-6-medium col-12-small">
-                                    <ul class="link-list">
-                                        <li><a href="#">Sed neque nisi consequat</a></li>
-                                        <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                        <li><a href="#">Quis accumsan lorem</a></li>
-                                        <li><a href="#">Suspendisse varius ipsum</a></li>
-                                        <li><a href="#">Eget et amet consequat</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-3 col-6-medium col-12-small">
-                                    <ul class="link-list">
-                                        <li><a href="#">Quis accumsan lorem</a></li>
-                                        <li><a href="#">Sed neque nisi consequat</a></li>
-                                        <li><a href="#">Eget et amet consequat</a></li>
-                                        <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                        <li><a href="#">Vitae magna sed dolore</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                    <div class="col-4 col-12-medium">
-                        <section>
-                            <h2>Something of interest</h2>
-                            <p>Duis neque nisi, dapibus sed mattis quis, rutrum accumsan sed...</p>
-                            <footer class="controls">
-                                <a href="#" class="button">Oh, please continue ....</a>
-                            </footer>
-                        </section>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-12">
                         <div id="copyright">
