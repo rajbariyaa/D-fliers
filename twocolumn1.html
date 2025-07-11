@@ -59,43 +59,51 @@
         }
 
         .accordion {
-            background-color: #f7f9fb;
+            background-color: #eef6fc;
             color: #222;
             cursor: pointer;
             padding: 18px;
             width: 100%;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             text-align: left;
             outline: none;
             font-size: 18px;
             font-weight: 600;
-            margin-bottom: 10px;
-            transition: background-color 0.3s ease;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease-in-out;
         }
 
         .accordion:hover {
-            background-color: #e0efff;
+            background-color: #d4ebff;
         }
 
         .accordion:after {
-            content: '\002B';
-            font-weight: bold;
+            content: '\25BC';
             float: right;
             margin-left: 5px;
+            transition: transform 0.3s;
         }
 
         .accordion.active:after {
-            content: "\2212";
+            transform: rotate(180deg);
         }
 
         .panel {
-            padding: 0 18px;
+            padding: 15px 20px;
             background-color: white;
             display: none;
             overflow: hidden;
-            border-left: 3px solid #007acc;
+            border-left: 4px solid #007acc;
+            border-radius: 0 0 8px 8px;
             margin-bottom: 20px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .panel p, .panel ul {
@@ -105,40 +113,50 @@
         .team-section {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 15px;
             justify-content: center;
         }
 
         .team-member {
-            flex: 0 0 120px;
+            flex: 0 0 100px;
             text-align: center;
         }
 
         .team-member img {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
             border-radius: 50%;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .team-member h4 {
             margin: 0;
-            font-size: 14px;
+            font-size: 13px;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
         }
 
         .tech-card {
             background: #f0f8ff;
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            border-left: 4px solid #007acc;
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: transform 0.3s ease;
         }
 
-        .tech-card strong {
-            display: block;
-            font-size: 16px;
-            margin-bottom: 5px;
+        .tech-card:hover {
+            transform: scale(1.02);
+        }
+
+        .tech-card h4 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            color: #005f99;
         }
     </style>
 </head>
@@ -173,17 +191,19 @@
 
             <button class="accordion">🧪 Technical Summary</button>
             <div class="panel">
-                <div class="tech-card">
-                    <strong>🧠 AI Models Used</strong>
-                    Logistic Regression, XGBoost, LSTM
-                </div>
-                <div class="tech-card">
-                    <strong>🌐 Data Sources</strong>
-                    FAA (flight data), NOAA (weather), OpenSky (air traffic), BTS
-                </div>
-                <div class="tech-card">
-                    <strong>🔄 Model Pipeline</strong>
-                    Diagram showing data → model → prediction (Insert graphic or flowchart)
+                <div class="tech-grid">
+                    <div class="tech-card">
+                        <h4>🧠 AI Models Used</h4>
+                        <p>We leverage a combination of models tailored to different tasks including Logistic Regression for baseline comparisons, XGBoost for structured tabular insights, and LSTM for sequence learning.</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🌐 Data Sources</h4>
+                        <p>We pull real-world data from FAA (flight logs), NOAA (climate conditions), OpenSky (air traffic), and BTS (transport stats).</p>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🔄 Model Pipeline</h4>
+                        <p>Our system transforms raw data through cleaning, feature engineering, and modeling to deliver actionable flight delay predictions. (Include pipeline graphic here)</p>
+                    </div>
                 </div>
             </div>
 
