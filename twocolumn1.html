@@ -1,243 +1,207 @@
 <!DOCTYPE HTML>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Research | D-Fliers</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-  <!-- Fonts & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+    <!-- Google Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
-  <style>
-    :root {
-      --main-color: #007acc;
-      --bg: #ffffff;
-      --text: #222;
-      --panel-bg: #f7f9fb;
-      --hover-bg: #e0efff;
-    }
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="assets/css/main.css" />
 
-    body.dark {
-      --bg: #0f172a;
-      --text: #e2e8f0;
-      --panel-bg: #1e293b;
-      --hover-bg: #334155;
-    }
+    <!-- Font and Color Overrides -->
+    <style>
+        body, input, select, textarea {
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #222;
+            background-color: #fff;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            color: #111;
+            letter-spacing: -0.5px;
+            text-transform: none !important;
+        }
 
-    header {
-      background-color: var(--bg);
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
+        a {
+            text-decoration: none;
+            color: #007acc;
+        }
 
-    nav a {
-      margin-right: 20px;
-      text-decoration: none;
-      color: var(--main-color);
-      font-weight: 600;
-    }
+        a:hover {
+            text-decoration: underline;
+        }
 
-    nav a:hover {
-      color: #005f99;
-    }
+        .button {
+            background-color: #007acc;
+            color: white;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 6px;
+            display: inline-block;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: none;
+            transition: background-color 0.3s;
+        }
 
-    .toggle-theme {
-      cursor: pointer;
-      font-size: 20px;
-      color: var(--main-color);
-    }
+        .button:hover {
+            background-color: #005f99;
+        }
 
-    .container {
-      max-width: 960px;
-      margin: auto;
-      padding: 40px 20px;
-    }
+        #nav a {
+            text-transform: none !important;
+        }
 
-    .accordion {
-      background-color: var(--panel-bg);
-      color: var(--text);
-      cursor: pointer;
-      padding: 18px 24px;
-      width: 100%;
-      border: none;
-      border-radius: 8px;
-      text-align: left;
-      outline: none;
-      font-size: 18px;
-      font-weight: 600;
-      margin-bottom: 10px;
-      transition: background 0.4s ease, transform 0.2s ease;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.05);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+        .accordion {
+            background-color: #f7f9fb;
+            color: #222;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
 
-    .accordion:hover {
-      background-color: var(--hover-bg);
-      transform: translateY(-1px);
-    }
+        .accordion:hover {
+            background-color: #e0efff;
+        }
 
-    .accordion i.fa-chevron-down {
-      transition: transform 0.3s ease;
-    }
+        .accordion:after {
+            content: '\002B';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
 
-    .accordion.active i.fa-chevron-down {
-      transform: rotate(180deg);
-    }
+        .accordion.active:after {
+            content: "\2212";
+        }
 
-    .panel {
-      background-color: var(--bg);
-      overflow: hidden;
-      max-height: 0;
-      transition: max-height 0.5s ease, padding 0.3s ease;
-      border-left: 3px solid var(--main-color);
-      padding: 0 24px;
-      border-radius: 0 0 8px 8px;
-    }
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            display: none;
+            overflow: hidden;
+            border-left: 3px solid #007acc;
+            margin-bottom: 20px;
+        }
 
-    .panel.open {
-      padding: 20px 24px;
-    }
-
-    .panel p, .panel ul {
-      margin-bottom: 15px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 30px 0;
-      background: var(--panel-bg);
-      color: var(--text);
-      margin-top: 40px;
-      font-size: 14px;
-    }
-
-    @media (max-width: 768px) {
-      .accordion {
-        font-size: 16px;
-        padding: 14px 18px;
-      }
-    }
-  </style>
+        .panel p, .panel ul {
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
+    <div id="page-wrapper">
 
-  <!-- Header -->
-  <header>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="twocolumn1.html" class="current-page-item">Research</a>
-      <a href="twocolumn2.html">Dashboard</a>
-      <a href="onecolumn.html">About</a>
-      <a href="threecolumn.html">Contact</a>
-    </nav>
-    <div class="toggle-theme" onclick="toggleTheme()">
-      <i class="fas fa-moon" id="themeIcon"></i>
+        <!-- Header -->
+        <div id="header-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <header id="header">
+                            <nav id="nav">
+                                <a href="index.html">Home</a>
+                                <a href="twocolumn1.html" class="current-page-item">Research</a>
+                                <a href="twocolumn2.html">Dashboard</a>
+                                <a href="onecolumn.html">About</a>
+                                <a href="threecolumn.html">Contact</a>
+                            </nav>
+                        </header>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main -->
+        <div id="main">
+            <div class="container">
+
+                <button class="accordion">📄 Project Abstract</button>
+                <div class="panel">
+                    <p>The D-Fliers project explores the intersection of artificial intelligence and climate data to predict flight delays. By analyzing real-time and historical weather patterns alongside flight data, our model enhances airspace resilience and supports better decision-making for airlines and passengers alike.</p>
+                </div>
+
+                <button class="accordion">🎯 Research Objectives</button>
+                <div class="panel">
+                    <ul>
+                        <li>Develop a machine learning model for accurate flight delay prediction</li>
+                        <li>Incorporate real-time climate data to improve predictive power</li>
+                        <li>Utilize explainable AI to understand feature impact and ensure transparency</li>
+                        <li>Improve operational planning and passenger communication for airlines</li>
+                    </ul>
+                </div>
+
+                <button class="accordion">🔬 Methodology</button>
+                <div class="panel">
+                    <p>Our research uses FAA historical flight data and real-time NOAA weather data. We preprocess, clean, and engineer features to train an XGBoost regression model. Model performance is evaluated using MAE, RMSE, and R² metrics. Explainable AI tools like SHAP and LIME are integrated to interpret the influence of key variables.</p>
+                    <ul>
+                        <li><strong>Tools:</strong> Python, Pandas, Scikit-learn, XGBoost, SHAP, LIME</li>
+                        <li><strong>Techniques:</strong> Feature engineering, cross-validation, model interpretation</li>
+                    </ul>
+                </div>
+
+                <button class="accordion">📊 Preliminary Results</button>
+                <div class="panel">
+                    <p>Initial results show promising predictive accuracy, with weather-related features like wind speed, temperature variance, and precipitation ranking highest in influence. SHAP visualizations reveal nuanced insights into how these features interact with delays, guiding further optimization.</p>
+                </div>
+
+                <button class="accordion">📎 Download & References</button>
+                <div class="panel">
+                    <p><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">View Full Research Document</a></p>
+                    <p><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a> (Model & Code)</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div id="footer-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div id="copyright">
+                            &copy; Powered by D-Fliers
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-  </header>
 
-  <!-- Main Content -->
-  <div class="container">
-
-    <button class="accordion" data-aos="fade-up">
-      <span>📄 Project Abstract</span> <i class="fas fa-chevron-down"></i>
-    </button>
-    <div class="panel">
-      <p>The D-Fliers project explores the intersection of artificial intelligence and climate data to predict flight delays. By analyzing real-time and historical weather patterns alongside flight data, our model enhances airspace resilience and supports better decision-making for airlines and passengers alike.</p>
-    </div>
-
-    <button class="accordion" data-aos="fade-up">
-      <span>🎯 Research Objectives</span> <i class="fas fa-chevron-down"></i>
-    </button>
-    <div class="panel">
-      <ul>
-        <li>Develop a machine learning model for accurate flight delay prediction</li>
-        <li>Incorporate real-time climate data to improve predictive power</li>
-        <li>Utilize explainable AI to understand feature impact and ensure transparency</li>
-        <li>Improve operational planning and passenger communication for airlines</li>
-      </ul>
-    </div>
-
-    <button class="accordion" data-aos="fade-up">
-      <span>🔬 Methodology</span> <i class="fas fa-chevron-down"></i>
-    </button>
-    <div class="panel">
-      <p>We preprocess FAA and NOAA data, train an XGBoost model, and integrate SHAP and LIME for interpretability. Performance is measured using MAE, RMSE, and R².</p>
-      <ul>
-        <li><strong>Tools:</strong> Python, Pandas, Scikit-learn, XGBoost, SHAP, LIME</li>
-        <li><strong>Techniques:</strong> Feature engineering, cross-validation, model interpretation</li>
-      </ul>
-    </div>
-
-    <button class="accordion" data-aos="fade-up">
-      <span>📊 Preliminary Results</span> <i class="fas fa-chevron-down"></i>
-    </button>
-    <div class="panel">
-      <p>Our model achieved R² of 0.81 and MAE under 12 minutes. SHAP plots indicate wind, precipitation, and departure airport are the most predictive features.</p>
-    </div>
-
-    <button class="accordion" data-aos="fade-up">
-      <span>📎 Download & References</span> <i class="fas fa-chevron-down"></i>
-    </button>
-    <div class="panel">
-      <p><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">📄 View Full Research Document</a></p>
-      <p><a href="https://github.com/your-repo-link" target="_blank">💻 GitHub Repository</a></p>
-    </div>
-
-  </div>
-
-  <!-- Footer -->
-  <footer>
-    &copy; Powered by D-Fliers
-  </footer>
-
-  <!-- Scripts -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <script>
-    AOS.init();
-
-    // Accordion logic
-    document.querySelectorAll(".accordion").forEach(btn => {
-      btn.addEventListener("click", function () {
-        const panel = this.nextElementSibling;
-        this.classList.toggle("active");
-        const icon = this.querySelector(".fa-chevron-down");
-        icon.classList.toggle("rotate");
-        if (panel.classList.contains("open")) {
-          panel.style.maxHeight = null;
-          panel.classList.remove("open");
-        } else {
-          panel.style.maxHeight = panel.scrollHeight + "px";
-          panel.classList.add("open");
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        const acc = document.getElementsByClassName("accordion");
+        for (let i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
         }
-      });
-    });
+    </script>
 
-    // Dark mode toggle
-    function toggleTheme() {
-      document.body.classList.toggle("dark");
-      const icon = document.getElementById("themeIcon");
-      icon.classList.toggle("fa-moon");
-      icon.classList.toggle("fa-sun");
-    }
-  </script>
 </body>
 </html>
