@@ -7,23 +7,25 @@
     <!-- Google Font: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
+    <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/main.css" />
 
-    <!-- Internal Font Styling -->
+    <!-- Font and Color Overrides -->
     <style>
         body, input, select, textarea {
             font-family: 'Inter', sans-serif;
             font-size: 16px;
             line-height: 1.6;
-            color: #333;
-            background-color: #f9fbfd;
+            color: #222;
+            background-color: #fff;
         }
 
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Inter', sans-serif;
             font-weight: 600;
+            color: #111;
             letter-spacing: -0.5px;
-            color: #222;
+            text-transform: none !important;
         }
 
         a {
@@ -44,11 +46,60 @@
             display: inline-block;
             font-weight: 600;
             font-size: 14px;
+            text-transform: none;
             transition: background-color 0.3s;
         }
 
         .button:hover {
             background-color: #005f99;
+        }
+
+        #nav a {
+            text-transform: none !important;
+        }
+
+        .accordion {
+            background-color: #f7f9fb;
+            color: #222;
+            cursor: pointer;
+            padding: 18px;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .accordion:hover {
+            background-color: #e0efff;
+        }
+
+        .accordion:after {
+            content: '\002B';
+            font-weight: bold;
+            float: right;
+            margin-left: 5px;
+        }
+
+        .accordion.active:after {
+            content: "\2212";
+        }
+
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            display: none;
+            overflow: hidden;
+            border-left: 3px solid #007acc;
+            margin-bottom: 20px;
+        }
+
+        .panel p, .panel ul {
+            margin-bottom: 15px;
         }
     </style>
 </head>
@@ -63,10 +114,10 @@
                         <header id="header">
                             <nav id="nav">
                                 <a href="index.html">Home</a>
-                                <a href="twocolumn1.html">Research</a>
-                                <a href="twocolumn2.html">Dashboard</a>
-                                <a href="onecolumn.html" class="current-page-item">About</a>
-                            
+                                <a href="twocolumn1.html">About</a>
+                                  <a href="twocolumn2.html" class="current-page-item">dashboard</a>
+                                <a href="onecolumn.html">Contact</a>
+            
                             </nav>
                         </header>
                     </div>
@@ -77,78 +128,48 @@
         <!-- Main -->
         <div id="main">
             <div class="container">
-                <div class="row main-row">
-                    <div class="col-12">
-                        <section>
-                            <h2>One Column (no sidebar)</h2>
-                            <p>This is the second generic interior page. Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                            <p>Mauris risus nulla, pulvinar vitae sagittis a, pharetra nec tellus...</p>
-                            <p>Nulla ut tortor quam, a luctus nunc. Nulla condimentum diam porttitor arcu placerat tincidunt...</p>
-                        </section>
-                    </div>
+
+                <button class="accordion">📄 Project Abstract</button>
+                <div class="panel">
+                    <p>The D-Fliers project explores the intersection of artificial intelligence and climate data to predict flight delays. By analyzing real-time and historical weather patterns alongside flight data, our model enhances airspace resilience and supports better decision-making for airlines and passengers alike.</p>
                 </div>
+
+                <button class="accordion">🎯 Research Objectives</button>
+                <div class="panel">
+                    <ul>
+                        <li>Develop a machine learning model for accurate flight delay prediction</li>
+                        <li>Incorporate real-time climate data to improve predictive power</li>
+                        <li>Utilize explainable AI to understand feature impact and ensure transparency</li>
+                        <li>Improve operational planning and passenger communication for airlines</li>
+                    </ul>
+                </div>
+
+                <button class="accordion">🔬 Methodology</button>
+                <div class="panel">
+                    <p>Our research uses FAA historical flight data and real-time NOAA weather data. We preprocess, clean, and engineer features to train an XGBoost regression model. Model performance is evaluated using MAE, RMSE, and R² metrics. Explainable AI tools like SHAP and LIME are integrated to interpret the influence of key variables.</p>
+                    <ul>
+                        <li><strong>Tools:</strong> Python, Pandas, Scikit-learn, XGBoost, SHAP, LIME</li>
+                        <li><strong>Techniques:</strong> Feature engineering, cross-validation, model interpretation</li>
+                    </ul>
+                </div>
+
+                <button class="accordion">📊 Preliminary Results</button>
+                <div class="panel">
+                    <p>Initial results show promising predictive accuracy, with weather-related features like wind speed, temperature variance, and precipitation ranking highest in influence. SHAP visualizations reveal nuanced insights into how these features interact with delays, guiding further optimization.</p>
+                </div>
+
+                <button class="accordion">📎 Download & References</button>
+                <div class="panel">
+                    <p><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">View Full Research Document</a></p>
+                    <p><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a> (Model & Code)</p>
+                </div>
+
             </div>
         </div>
 
         <!-- Footer -->
         <div id="footer-wrapper">
             <div class="container">
-                <div class="row">
-                    <div class="col-8 col-12-medium">
-                        <section>
-                            <h2>How about a truckload of links?</h2>
-                            <div>
-                                <div class="row">
-                                    <div class="col-3 col-6-medium col-12-small">
-                                        <ul class="link-list">
-                                            <li><a href="#">Sed neque nisi consequat</a></li>
-                                            <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                            <li><a href="#">Quis accumsan lorem</a></li>
-                                            <li><a href="#">Suspendisse varius ipsum</a></li>
-                                            <li><a href="#">Eget et amet consequat</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-3 col-6-medium col-12-small">
-                                        <ul class="link-list">
-                                            <li><a href="#">Quis accumsan lorem</a></li>
-                                            <li><a href="#">Sed neque nisi consequat</a></li>
-                                            <li><a href="#">Eget et amet consequat</a></li>
-                                            <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                            <li><a href="#">Vitae magna sed dolore</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-3 col-6-medium col-12-small">
-                                        <ul class="link-list">
-                                            <li><a href="#">Sed neque nisi consequat</a></li>
-                                            <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                            <li><a href="#">Quis accumsan lorem</a></li>
-                                            <li><a href="#">Suspendisse varius ipsum</a></li>
-                                            <li><a href="#">Eget et amet consequat</a></li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-3 col-6-medium col-12-small">
-                                        <ul class="link-list">
-                                            <li><a href="#">Quis accumsan lorem</a></li>
-                                            <li><a href="#">Sed neque nisi consequat</a></li>
-                                            <li><a href="#">Eget et amet consequat</a></li>
-                                            <li><a href="#">Dapibus sed mattis blandit</a></li>
-                                            <li><a href="#">Vitae magna sed dolore</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-                    </div>
-                    <div class="col-4 col-12-medium">
-                        <section>
-                            <h2>Something of interest</h2>
-                            <p>Duis neque nisi, dapibus sed mattis quis, rutrum accumsan sed...</p>
-                            <footer class="controls">
-                                <a href="#" class="button">Oh, please continue ....</a>
-                            </footer>
-                        </section>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-12">
                         <div id="copyright">
@@ -167,6 +188,20 @@
     <script src="assets/js/breakpoints.min.js"></script>
     <script src="assets/js/util.js"></script>
     <script src="assets/js/main.js"></script>
+    <script>
+        const acc = document.getElementsByClassName("accordion");
+        for (let i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function () {
+                this.classList.toggle("active");
+                const panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
