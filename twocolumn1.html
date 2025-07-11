@@ -102,24 +102,21 @@
             margin-bottom: 15px;
         }
 
-        .team-scroll-wrapper {
-            overflow-x: auto;
-            padding: 20px 0;
-        }
-
         .team-section {
             display: flex;
+            flex-wrap: wrap;
             gap: 20px;
+            justify-content: center;
         }
 
         .team-member {
-            flex: 0 0 auto;
+            flex: 0 0 120px;
             text-align: center;
         }
 
         .team-member img {
-            width: 150px;
-            height: 150px;
+            width: 100px;
+            height: 100px;
             object-fit: cover;
             border-radius: 50%;
             margin-bottom: 10px;
@@ -127,132 +124,148 @@
 
         .team-member h4 {
             margin: 0;
+            font-size: 14px;
+        }
+
+        .tech-card {
+            background: #f0f8ff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #007acc;
+        }
+
+        .tech-card strong {
+            display: block;
             font-size: 16px;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
-    <div id="page-wrapper">
-
-        <!-- Header -->
-        <div id="header-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <header id="header">
-                            <nav id="nav">
-                                <a href="index.html">Home</a>
-                                <a href="twocolumn1.html" class="current-page-item">About</a>
-                                <a href="twocolumn2.html">Dashboard</a>
-                                <a href="onecolumn.html">Contact</a>
-                            </nav>
-                        </header>
-                    </div>
+<div id="page-wrapper">
+    <!-- Header -->
+    <div id="header-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <header id="header">
+                        <nav id="nav">
+                            <a href="index.html">Home</a>
+                            <a href="twocolumn1.html" class="current-page-item">About</a>
+                            <a href="twocolumn2.html">Dashboard</a>
+                            <a href="onecolumn.html">Contact</a>
+                        </nav>
+                    </header>
                 </div>
             </div>
         </div>
-
-        <!-- Main -->
-        <div id="main">
-            <div class="container">
-
-                <button class="accordion">🎯 Project Mission</button>
-                <div class="panel">
-                    <p>The D-Fliers initiative applies machine learning to predict weather-induced flight delays, aiming to improve air traffic decision-making and support climate-resilient airspace systems.</p>
-                </div>
-
-                <button class="accordion">🧪 Technical Summary</button>
-                <div class="panel">
-                    <ul>
-                        <li><strong>AI Models Used:</strong> Logistic Regression, XGBoost, LSTM</li>
-                        <li><strong>Data Sources:</strong> FAA (flight data), NOAA (weather), OpenSky (air traffic), BTS</li>
-                        <li><strong>Model Pipeline:</strong> (Include diagram showing data → model → prediction)</li>
-                    </ul>
-                </div>
-
-                <button class="accordion">👥 Meet the Team</button>
-                <div class="panel">
-                    <div class="team-scroll-wrapper">
-                        <section class="team-section">
-                            <div class="team-member">
-                                <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
-                                <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
-                            </div>
-                            <div class="team-member">
-                                <img src="images/pic3.jpg" alt="Abiola Ajala" />
-                                <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
-                            </div>
-                            <div class="team-member">
-                                <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
-                                <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
-                            </div>
-                            <div class="team-member">
-                                <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
-                                <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
-                            </div>
-                            <div class="team-member">
-                                <img src="images/mypic.jpeg" alt="Raj Bariya" />
-                                <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
-                            </div>
-                            <div class="team-member">
-                                <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
-                                <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
-                            </div>
-                            <div class="team-member">
-                                <img src="images/pic1.jpg" alt="Kyle Burke" />
-                                <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-
-                <button class="accordion">📜 Publications or Milestones</button>
-                <div class="panel">
-                    <ul>
-                        <li><a href="#">Link to papers</a></li>
-                        <li><a href="#">Poster or conference mentions</a></li>
-                        <li><a href="#">Project milestones or timeline graphic</a></li>
-                    </ul>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div id="footer-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div id="copyright">
-                            &copy; Powered by D-Fliers
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Scripts -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script>
-        const acc = document.getElementsByClassName("accordion");
-        for (let i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function () {
-                this.classList.toggle("active");
-                const panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
-                } else {
-                    panel.style.display = "block";
-                }
-            });
-        }
-    </script>
+    <!-- Main -->
+    <div id="main">
+        <div class="container">
 
+            <button class="accordion">🎯 Project Mission</button>
+            <div class="panel">
+                <p>The D-Fliers initiative applies machine learning to predict weather-induced flight delays, aiming to improve air traffic decision-making and support climate-resilient airspace systems.</p>
+            </div>
+
+            <button class="accordion">🧪 Technical Summary</button>
+            <div class="panel">
+                <div class="tech-card">
+                    <strong>🧠 AI Models Used</strong>
+                    Logistic Regression, XGBoost, LSTM
+                </div>
+                <div class="tech-card">
+                    <strong>🌐 Data Sources</strong>
+                    FAA (flight data), NOAA (weather), OpenSky (air traffic), BTS
+                </div>
+                <div class="tech-card">
+                    <strong>🔄 Model Pipeline</strong>
+                    Diagram showing data → model → prediction (Insert graphic or flowchart)
+                </div>
+            </div>
+
+            <button class="accordion">👥 Meet the Team</button>
+            <div class="panel">
+                <section class="team-section">
+                    <div class="team-member">
+                        <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
+                        <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/pic3.jpg" alt="Abiola Ajala" />
+                        <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
+                        <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
+                        <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/mypic.jpeg" alt="Raj Bariya" />
+                        <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
+                        <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/pic1.jpg" alt="Kyle Burke" />
+                        <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+                    </div>
+                </section>
+            </div>
+
+            <button class="accordion">📜 Publications or Milestones</button>
+            <div class="panel">
+                <ul>
+                    <li><a href="#">Link to papers</a></li>
+                    <li><a href="#">Poster or conference mentions</a></li>
+                    <li><a href="#">Project milestones or timeline graphic</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div id="copyright">
+                        &copy; Powered by D-Fliers
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+<script>
+    const acc = document.getElementsByClassName("accordion");
+    for (let i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            const panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+    }
+</script>
 </body>
 </html>
