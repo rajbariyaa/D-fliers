@@ -10,7 +10,6 @@
   <!-- Main CSS -->
   <link rel="stylesheet" href="assets/css/main.css" />
 
-  <!-- Styles -->
   <style>
     body, input, select, textarea {
       font-family: 'Inter', sans-serif;
@@ -31,6 +30,7 @@
       font-weight: 600;
       color: #111;
       letter-spacing: -0.5px;
+      transition: color 0.4s;
     }
 
     body.dark-mode h1,
@@ -45,6 +45,7 @@
     a {
       text-decoration: none;
       color: #007acc;
+      transition: color 0.4s;
     }
 
     body.dark-mode a {
@@ -70,6 +71,13 @@
       background-color: #005f99;
     }
 
+    #nav {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
     #nav a {
       text-transform: none !important;
     }
@@ -86,7 +94,7 @@
       font-size: 18px;
       font-weight: 600;
       margin-bottom: 10px;
-      transition: background-color 0.3s ease;
+      transition: background-color 0.3s ease, color 0.4s;
     }
 
     .accordion:hover {
@@ -110,7 +118,8 @@
       overflow: hidden;
       border-left: 3px solid #007acc;
       margin-bottom: 20px;
-      transition: max-height 0.4s ease, padding 0.4s ease;
+      transition: max-height 0.4s ease, padding 0.4s ease, background-color 0.4s, color 0.4s;
+      color: #222;
     }
 
     .panel.open {
@@ -122,18 +131,47 @@
       color: #eee;
     }
 
+    body.dark-mode .accordion:hover {
+      background-color: #333;
+    }
+
     body.dark-mode .panel {
       background-color: #1e1e1e;
       color: #eee;
       border-left-color: #66b2ff;
     }
 
-    /* Toggle switch */
+    /* Dark mode fixes for header nav */
+    body.dark-mode #nav a.current-page-item {
+      color: #66b2ff;
+      font-weight: 700;
+    }
+
+    body.dark-mode #nav a {
+      color: #a0cfff;
+    }
+
+    body.dark-mode #nav a:hover {
+      color: #66b2ff;
+    }
+
+    /* Toggle switch inside nav */
     .toggle-switch {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .toggle-switch label {
+      margin-left: 8px;
+      font-weight: 600;
+      color: #222;
+      user-select: none;
+      transition: color 0.4s;
+    }
+
+    body.dark-mode .toggle-switch label {
+      color: #eee;
     }
 
     .toggle-switch input {
@@ -173,15 +211,10 @@
       left: calc(100% - 2px);
       transform: translateX(-100%);
     }
+
   </style>
 </head>
 <body>
-
-  <!-- Dark Mode Toggle -->
-  <div class="toggle-switch">
-    <input type="checkbox" id="dark-mode-toggle">
-    <label for="dark-mode-toggle" class="switch"></label>
-  </div>
 
   <div id="page-wrapper">
     <!-- Header -->
@@ -194,6 +227,12 @@
             <a href="twocolumn2.html">Dashboard</a>
             <a href="onecolumn.html">About</a>
             <a href="threecolumn.html">Contact</a>
+
+            <!-- Dark Mode Toggle -->
+            <div class="toggle-switch" title="Toggle dark mode">
+              <input type="checkbox" id="dark-mode-toggle" />
+              <label for="dark-mode-toggle" class="switch"></label>
+            </div>
           </nav>
         </header>
       </div>
@@ -257,7 +296,7 @@
 
   <!-- Scripts -->
   <script>
-    // Accordion behavior
+    // Accordion toggle logic
     const acc = document.getElementsByClassName("accordion");
     for (let i = 0; i < acc.length; i++) {
       acc[i].addEventListener("click", function () {
@@ -273,7 +312,7 @@
       });
     }
 
-    // Dark mode toggle
+    // Dark mode toggle logic
     const darkToggle = document.getElementById('dark-mode-toggle');
     darkToggle.addEventListener('change', function () {
       document.body.classList.toggle('dark-mode', this.checked);
