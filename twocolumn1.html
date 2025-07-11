@@ -18,17 +18,6 @@
             line-height: 1.6;
             color: #222;
             background-color: #fff;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        body.dark-mode {
-            background-color: #121212;
-            color: #f0f0f0;
-        }
-
-        body.dark-mode .accordion {
-            background-color: #1e1e1e;
-            color: #f0f0f0;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -37,10 +26,6 @@
             color: #111;
             letter-spacing: -0.5px;
             text-transform: none !important;
-        }
-
-        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 {
-            color: #ffffff;
         }
 
         a {
@@ -86,75 +71,39 @@
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 10px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-            position: relative;
+            transition: background-color 0.3s ease;
         }
 
         .accordion:hover {
             background-color: #e0efff;
-            transform: scale(1.01);
         }
 
-        .accordion::after {
+        .accordion:after {
             content: '\002B';
             font-weight: bold;
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: transform 0.3s ease;
+            float: right;
+            margin-left: 5px;
         }
 
-        .accordion.active::after {
+        .accordion.active:after {
             content: "\2212";
-            transform: translateY(-50%) rotate(180deg);
         }
 
         .panel {
             padding: 0 18px;
             background-color: white;
-            max-height: 0;
+            display: none;
             overflow: hidden;
             border-left: 3px solid #007acc;
             margin-bottom: 20px;
-            transition: max-height 0.4s ease-out, padding 0.3s ease;
-        }
-
-        .panel.open {
-            padding: 18px;
-        }
-
-        body.dark-mode .panel {
-            background-color: #1e1e1e;
-            border-left-color: #66b2ff;
         }
 
         .panel p, .panel ul {
             margin-bottom: 15px;
         }
-
-        #dark-mode-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 999;
-            background: #007acc;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        #dark-mode-toggle:hover {
-            background: #005f99;
-        }
     </style>
 </head>
 <body>
-    <button id="dark-mode-toggle">🌙 Toggle Dark Mode</button>
     <div id="page-wrapper">
 
         <!-- Header -->
@@ -245,21 +194,13 @@
             acc[i].addEventListener("click", function () {
                 this.classList.toggle("active");
                 const panel = this.nextElementSibling;
-                if (panel.classList.contains("open")) {
-                    panel.style.maxHeight = null;
-                    panel.classList.remove("open");
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
                 } else {
-                    panel.style.maxHeight = panel.scrollHeight + "px";
-                    panel.classList.add("open");
+                    panel.style.display = "block";
                 }
             });
         }
-
-        // Dark mode toggle
-        const toggleButton = document.getElementById('dark-mode-toggle');
-        toggleButton.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-        });
     </script>
 
 </body>
