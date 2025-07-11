@@ -18,6 +18,12 @@
             line-height: 1.6;
             color: #222;
             background-color: #fff;
+            transition: background-color 0.4s, color 0.4s;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #eee;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -26,6 +32,15 @@
             color: #111;
             letter-spacing: -0.5px;
             text-transform: none !important;
+        }
+
+        body.dark-mode h1,
+        body.dark-mode h2,
+        body.dark-mode h3,
+        body.dark-mode h4,
+        body.dark-mode h5,
+        body.dark-mode h6 {
+            color: #f0f0f0;
         }
 
         a {
@@ -92,21 +107,55 @@
         .panel {
             padding: 0 18px;
             background-color: white;
-            display: none;
+            max-height: 0;
             overflow: hidden;
             border-left: 3px solid #007acc;
             margin-bottom: 20px;
+            transition: max-height 0.4s ease-out, padding 0.4s ease;
         }
 
-        .panel p, .panel ul {
-            margin-bottom: 15px;
+        .panel.open {
+            padding: 18px;
+        }
+
+        body.dark-mode .accordion {
+            background-color: #1e1e1e;
+            color: #eee;
+        }
+
+        body.dark-mode .panel {
+            background-color: #1e1e1e;
+            color: #eee;
+            border-left-color: #66b2ff;
+        }
+
+        #dark-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #007acc;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: background 0.3s;
+        }
+
+        #dark-toggle:hover {
+            background: #005f99;
         }
     </style>
 </head>
 <body>
+    <button id="dark-toggle">🌙</button>
     <div id="page-wrapper">
-
-        <!-- Header -->
         <div id="header-wrapper">
             <div class="container">
                 <div class="row">
@@ -125,10 +174,8 @@
             </div>
         </div>
 
-        <!-- Main -->
         <div id="main">
             <div class="container">
-
                 <button class="accordion">📄 Project Abstract</button>
                 <div class="panel">
                     <p>The D-Fliers project explores the intersection of artificial intelligence and climate data to predict flight delays. By analyzing real-time and historical weather patterns alongside flight data, our model enhances airspace resilience and supports better decision-making for airlines and passengers alike.</p>
@@ -163,11 +210,9 @@
                     <p><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">View Full Research Document</a></p>
                     <p><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a> (Model & Code)</p>
                 </div>
-
             </div>
         </div>
 
-        <!-- Footer -->
         <div id="footer-wrapper">
             <div class="container">
                 <div class="row">
@@ -179,7 +224,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Scripts -->
@@ -194,14 +238,19 @@
             acc[i].addEventListener("click", function () {
                 this.classList.toggle("active");
                 const panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
+                if (panel.classList.contains("open")) {
+                    panel.style.maxHeight = null;
+                    panel.classList.remove("open");
                 } else {
-                    panel.style.display = "block";
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                    panel.classList.add("open");
                 }
             });
         }
-    </script>
 
+        document.getElementById('dark-toggle').addEventListener('click', function () {
+            document.body.classList.toggle('dark-mode');
+        });
+    </script>
 </body>
 </html>
