@@ -1,207 +1,115 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-    <!-- Google Font: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Google Font: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Main CSS -->
-    <link rel="stylesheet" href="assets/css/main.css" />
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="assets/css/main.css" />
 
-    <!-- Font and Color Overrides -->
-    <style>
-        body, input, select, textarea {
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            line-height: 1.6;
-            color: #222;
-            background-color: #fff;
-        }
+  <style>
+    body, input, select, textarea {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: #222;
+      background-color: #fff;
+    }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            color: #111;
-            letter-spacing: -0.5px;
-            text-transform: none !important;
-        }
+    h2 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-top: 40px;
+    }
 
-        a {
-            text-decoration: none;
-            color: #007acc;
-        }
+    .team-scroll-wrapper {
+      overflow-x: auto;
+      padding: 20px 0;
+    }
 
-        a:hover {
-            text-decoration: underline;
-        }
+    .team-section {
+      display: flex;
+      gap: 20px;
+    }
 
-        .button {
-            background-color: #007acc;
-            color: white;
-            padding: 10px 18px;
-            border: none;
-            border-radius: 6px;
-            display: inline-block;
-            font-weight: 600;
-            font-size: 14px;
-            text-transform: none;
-            transition: background-color 0.3s;
-        }
+    .team-member {
+      flex: 0 0 auto;
+      text-align: center;
+    }
 
-        .button:hover {
-            background-color: #005f99;
-        }
+    .team-member img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin-bottom: 10px;
+    }
 
-        #nav a {
-            text-transform: none !important;
-        }
-
-        .accordion {
-            background-color: #f7f9fb;
-            color: #222;
-            cursor: pointer;
-            padding: 18px;
-            width: 100%;
-            border: none;
-            border-radius: 6px;
-            text-align: left;
-            outline: none;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            transition: background-color 0.3s ease;
-        }
-
-        .accordion:hover {
-            background-color: #e0efff;
-        }
-
-        .accordion:after {
-            content: '\002B';
-            font-weight: bold;
-            float: right;
-            margin-left: 5px;
-        }
-
-        .accordion.active:after {
-            content: "\2212";
-        }
-
-        .panel {
-            padding: 0 18px;
-            background-color: white;
-            display: none;
-            overflow: hidden;
-            border-left: 3px solid #007acc;
-            margin-bottom: 20px;
-        }
-
-        .panel p, .panel ul {
-            margin-bottom: 15px;
-        }
-    </style>
+    .team-member h4 {
+      margin: 0;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-    <div id="page-wrapper">
+  <div id="page-wrapper">
+    <div class="container">
+      <h2>📘 About D-Fliers</h2>
 
-        <!-- Header -->
-        <div id="header-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <header id="header">
-                            <nav id="nav">
-                                <a href="index.html">Home</a>
-                                <a href="twocolumn1.html" class="current-page-item">About</a>
-                                <a href="twocolumn2.html">Dashboard</a>
-                                <a href="onecolumn.html">Contact</a>
-                               
-                            </nav>
-                        </header>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <h3>🎯 Project Mission</h3>
+      <p>The D-Fliers initiative applies machine learning to predict weather-induced flight delays, aiming to improve air traffic decision-making and support climate-resilient airspace systems.</p>
 
-        <!-- Main -->
-        <div id="main">
-            <div class="container">
+      <h3>🧪 Technical Summary</h3>
+      <ul>
+        <li><strong>AI Models Used:</strong> Logistic Regression, XGBoost, LSTM</li>
+        <li><strong>Data Sources:</strong> FAA (flight data), NOAA (weather), OpenSky (air traffic), BTS</li>
+        <li><strong>Model Pipeline:</strong> (flowchart image or diagram showing data → model → prediction)</li>
+      </ul>
 
-                <button class="accordion">📄 Project Abstract</button>
-                <div class="panel">
-                    <p>The D-Fliers project explores the intersection of artificial intelligence and climate data to predict flight delays. By analyzing real-time and historical weather patterns alongside flight data, our model enhances airspace resilience and supports better decision-making for airlines and passengers alike.</p>
-                </div>
+      <h2>👥 Meet the Team</h2>
+      <div class="team-scroll-wrapper">
+        <section class="team-section">
+          <div class="team-member">
+            <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
+            <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
+          </div>
+          <div class="team-member">
+            <img src="images/pic3.jpg" alt="Abiola Ajala" />
+            <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
+          </div>
+          <div class="team-member">
+            <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
+            <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
+          </div>
+          <div class="team-member">
+            <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
+            <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
+          </div>
+          <div class="team-member">
+            <img src="images/mypic.jpeg" alt="Raj Bariya" />
+            <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
+          </div>
+          <div class="team-member">
+            <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
+            <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
+          </div>
+          <div class="team-member">
+            <img src="images/pic1.jpg" alt="Kyle Burke" />
+            <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+          </div>
+        </section>
+      </div>
 
-                <button class="accordion">🎯 Research Objectives</button>
-                <div class="panel">
-                    <ul>
-                        <li>Develop a machine learning model for accurate flight delay prediction</li>
-                        <li>Incorporate real-time climate data to improve predictive power</li>
-                        <li>Utilize explainable AI to understand feature impact and ensure transparency</li>
-                        <li>Improve operational planning and passenger communication for airlines</li>
-                    </ul>
-                </div>
-
-                <button class="accordion">🔬 Methodology</button>
-                <div class="panel">
-                    <p>Our research uses FAA historical flight data and real-time NOAA weather data. We preprocess, clean, and engineer features to train an XGBoost regression model. Model performance is evaluated using MAE, RMSE, and R² metrics. Explainable AI tools like SHAP and LIME are integrated to interpret the influence of key variables.</p>
-                    <ul>
-                        <li><strong>Tools:</strong> Python, Pandas, Scikit-learn, XGBoost, SHAP, LIME</li>
-                        <li><strong>Techniques:</strong> Feature engineering, cross-validation, model interpretation</li>
-                    </ul>
-                </div>
-
-                <button class="accordion">📊 Preliminary Results</button>
-                <div class="panel">
-                    <p>Initial results show promising predictive accuracy, with weather-related features like wind speed, temperature variance, and precipitation ranking highest in influence. SHAP visualizations reveal nuanced insights into how these features interact with delays, guiding further optimization.</p>
-                </div>
-
-                <button class="accordion">📎 Download & References</button>
-                <div class="panel">
-                    <p><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">View Full Research Document</a></p>
-                    <p><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a> (Model & Code)</p>
-                </div>
-
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div id="footer-wrapper">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <div id="copyright">
-                            &copy; Powered by D-Fliers
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+      <h3>📜 Publications or Milestones</h3>
+      <ul>
+        <li>Link to papers</li>
+        <li>Poster or conference mentions</li>
+        <li>Project milestones or timeline graphic</li>
+      </ul>
     </div>
-
-    <!-- Scripts -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script>
-        const acc = document.getElementsByClassName("accordion");
-        for (let i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function () {
-                this.classList.toggle("active");
-                const panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
-                } else {
-                    panel.style.display = "block";
-                }
-            });
-        }
-    </script>
-
+  </div>
 </body>
 </html>
