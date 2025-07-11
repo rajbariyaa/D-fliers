@@ -101,6 +101,34 @@
         .panel p, .panel ul {
             margin-bottom: 15px;
         }
+
+        .team-scroll-wrapper {
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+
+        .team-section {
+            display: flex;
+            gap: 20px;
+        }
+
+        .team-member {
+            flex: 0 0 auto;
+            text-align: center;
+        }
+
+        .team-member img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .team-member h4 {
+            margin: 0;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -117,7 +145,6 @@
                                 <a href="twocolumn1.html" class="current-page-item">About</a>
                                 <a href="twocolumn2.html">Dashboard</a>
                                 <a href="onecolumn.html">Contact</a>
-            
                             </nav>
                         </header>
                     </div>
@@ -129,39 +156,63 @@
         <div id="main">
             <div class="container">
 
-                <button class="accordion">📄 Project Abstract</button>
+                <button class="accordion">🎯 Project Mission</button>
                 <div class="panel">
-                    <p>The D-Fliers project explores the intersection of artificial intelligence and climate data to predict flight delays. By analyzing real-time and historical weather patterns alongside flight data, our model enhances airspace resilience and supports better decision-making for airlines and passengers alike.</p>
+                    <p>The D-Fliers initiative applies machine learning to predict weather-induced flight delays, aiming to improve air traffic decision-making and support climate-resilient airspace systems.</p>
                 </div>
 
-                <button class="accordion">🎯 Research Objectives</button>
+                <button class="accordion">🧪 Technical Summary</button>
                 <div class="panel">
                     <ul>
-                        <li>Develop a machine learning model for accurate flight delay prediction</li>
-                        <li>Incorporate real-time climate data to improve predictive power</li>
-                        <li>Utilize explainable AI to understand feature impact and ensure transparency</li>
-                        <li>Improve operational planning and passenger communication for airlines</li>
+                        <li><strong>AI Models Used:</strong> Logistic Regression, XGBoost, LSTM</li>
+                        <li><strong>Data Sources:</strong> FAA (flight data), NOAA (weather), OpenSky (air traffic), BTS</li>
+                        <li><strong>Model Pipeline:</strong> (Include diagram showing data → model → prediction)</li>
                     </ul>
                 </div>
 
-                <button class="accordion">🔬 Methodology</button>
+                <button class="accordion">👥 Meet the Team</button>
                 <div class="panel">
-                    <p>Our research uses FAA historical flight data and real-time NOAA weather data. We preprocess, clean, and engineer features to train an XGBoost regression model. Model performance is evaluated using MAE, RMSE, and R² metrics. Explainable AI tools like SHAP and LIME are integrated to interpret the influence of key variables.</p>
+                    <div class="team-scroll-wrapper">
+                        <section class="team-section">
+                            <div class="team-member">
+                                <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
+                                <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
+                            </div>
+                            <div class="team-member">
+                                <img src="images/pic3.jpg" alt="Abiola Ajala" />
+                                <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
+                            </div>
+                            <div class="team-member">
+                                <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
+                                <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
+                            </div>
+                            <div class="team-member">
+                                <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
+                                <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
+                            </div>
+                            <div class="team-member">
+                                <img src="images/mypic.jpeg" alt="Raj Bariya" />
+                                <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
+                            </div>
+                            <div class="team-member">
+                                <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
+                                <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
+                            </div>
+                            <div class="team-member">
+                                <img src="images/pic1.jpg" alt="Kyle Burke" />
+                                <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <button class="accordion">📜 Publications or Milestones</button>
+                <div class="panel">
                     <ul>
-                        <li><strong>Tools:</strong> Python, Pandas, Scikit-learn, XGBoost, SHAP, LIME</li>
-                        <li><strong>Techniques:</strong> Feature engineering, cross-validation, model interpretation</li>
+                        <li><a href="#">Link to papers</a></li>
+                        <li><a href="#">Poster or conference mentions</a></li>
+                        <li><a href="#">Project milestones or timeline graphic</a></li>
                     </ul>
-                </div>
-
-                <button class="accordion">📊 Preliminary Results</button>
-                <div class="panel">
-                    <p>Initial results show promising predictive accuracy, with weather-related features like wind speed, temperature variance, and precipitation ranking highest in influence. SHAP visualizations reveal nuanced insights into how these features interact with delays, guiding further optimization.</p>
-                </div>
-
-                <button class="accordion">📎 Download & References</button>
-                <div class="panel">
-                    <p><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">View Full Research Document</a></p>
-                    <p><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a> (Model & Code)</p>
                 </div>
 
             </div>
