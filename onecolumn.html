@@ -53,37 +53,64 @@
         }
 
         .contact-section {
-            max-width: 600px;
+            max-width: 650px;
             margin: 60px auto;
             background: white;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .contact-section h2 {
-            text-align: center;
+            font-size: 28px;
             color: #007acc;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .contact-section form input,
         .contact-section form textarea {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
+            padding: 14px;
+            margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 6px;
             font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            transition: border 0.3s;
+        }
+
+        .contact-section form input:focus,
+        .contact-section form textarea:focus {
+            border-color: #007acc;
+            outline: none;
         }
 
         .contact-details {
             margin-top: 40px;
-            text-align: center;
         }
 
         .contact-details p {
-            margin: 8px 0;
+            margin: 10px 0;
+            font-size: 15px;
+        }
+
+        .social-icons a {
+            display: inline-block;
+            margin: 0 10px;
+            font-size: 20px;
+            color: #007acc;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: #005f99;
         }
     </style>
 </head>
@@ -112,20 +139,20 @@
     <div id="main">
         <div class="container">
             <div class="contact-section">
-                <h2>📬 Get in Touch</h2>
+                <h2>📬 Let's Connect</h2>
                 <form action="https://formspree.io/f/mwkgyblb" method="POST">
                     <input type="text" name="name" placeholder="Your Name" required>
                     <input type="email" name="email" placeholder="Your Email" required>
                     <textarea name="message" rows="5" placeholder="Your Message" required></textarea>
-                    <button type="submit" class="button">Submit</button>
+                    <button type="submit" class="button">Send Message ✈️</button>
                 </form>
                 <div class="contact-details">
                     <p><strong>Email:</strong> contact@dfliers.ai</p>
                     <p><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a></p>
-                    <p>
-                        <a href="https://www.linkedin.com/company/dfliers" target="_blank">LinkedIn</a> |
-                        <a href="https://twitter.com/dfliers_ai" target="_blank">Twitter</a>
-                    </p>
+                    <div class="social-icons">
+                        <a href="https://www.linkedin.com/company/dfliers" target="_blank">🔗</a>
+                        <a href="https://twitter.com/dfliers_ai" target="_blank">🐦</a>
+                    </div>
                 </div>
             </div>
         </div>
