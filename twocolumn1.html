@@ -71,31 +71,43 @@
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 10px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            position: relative;
         }
 
         .accordion:hover {
             background-color: #e0efff;
+            transform: scale(1.01);
         }
 
-        .accordion:after {
+        .accordion::after {
             content: '\002B';
             font-weight: bold;
-            float: right;
-            margin-left: 5px;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: transform 0.3s ease;
         }
 
-        .accordion.active:after {
+        .accordion.active::after {
             content: "\2212";
+            transform: translateY(-50%) rotate(180deg);
         }
 
         .panel {
             padding: 0 18px;
             background-color: white;
-            display: none;
+            max-height: 0;
             overflow: hidden;
             border-left: 3px solid #007acc;
             margin-bottom: 20px;
+            transition: max-height 0.4s ease-out, padding 0.3s ease;
+        }
+
+        .panel.open {
+            padding: 18px;
         }
 
         .panel p, .panel ul {
@@ -194,10 +206,12 @@
             acc[i].addEventListener("click", function () {
                 this.classList.toggle("active");
                 const panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
+                if (panel.classList.contains("open")) {
+                    panel.style.maxHeight = null;
+                    panel.classList.remove("open");
                 } else {
-                    panel.style.display = "block";
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                    panel.classList.add("open");
                 }
             });
         }
