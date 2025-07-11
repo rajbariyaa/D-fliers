@@ -18,6 +18,17 @@
             line-height: 1.6;
             color: #222;
             background-color: #fff;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: #f0f0f0;
+        }
+
+        body.dark-mode .accordion {
+            background-color: #1e1e1e;
+            color: #f0f0f0;
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -26,6 +37,10 @@
             color: #111;
             letter-spacing: -0.5px;
             text-transform: none !important;
+        }
+
+        body.dark-mode h1, body.dark-mode h2, body.dark-mode h3 {
+            color: #ffffff;
         }
 
         a {
@@ -110,12 +125,36 @@
             padding: 18px;
         }
 
+        body.dark-mode .panel {
+            background-color: #1e1e1e;
+            border-left-color: #66b2ff;
+        }
+
         .panel p, .panel ul {
             margin-bottom: 15px;
+        }
+
+        #dark-mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 999;
+            background: #007acc;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        #dark-mode-toggle:hover {
+            background: #005f99;
         }
     </style>
 </head>
 <body>
+    <button id="dark-mode-toggle">🌙 Toggle Dark Mode</button>
     <div id="page-wrapper">
 
         <!-- Header -->
@@ -215,6 +254,12 @@
                 }
             });
         }
+
+        // Dark mode toggle
+        const toggleButton = document.getElementById('dark-mode-toggle');
+        toggleButton.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
     </script>
 
 </body>
