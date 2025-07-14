@@ -1,6 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
+    <title>D-Fliers by HTML5 UP</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
@@ -10,21 +11,22 @@
     <!-- Main CSS -->
     <link rel="stylesheet" href="assets/css/main.css" />
 
-    <!-- Font and Color Overrides -->
+    <!-- Internal Style Overrides -->
     <style>
         body, input, select, textarea {
             font-family: 'Inter', sans-serif;
             font-size: 16px;
             line-height: 1.6;
-            color: #222;
-            background-color: #fff;
+            color: #333;
+            background-color: #f9fbfd;
+            text-transform: none !important;
         }
 
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Inter', sans-serif;
             font-weight: 600;
-            color: #111;
             letter-spacing: -0.5px;
+            color: #222;
             text-transform: none !important;
         }
 
@@ -46,7 +48,7 @@
             display: inline-block;
             font-weight: 600;
             font-size: 14px;
-            text-transform: none;
+            text-transform: none !important;
             transition: background-color 0.3s;
         }
 
@@ -54,208 +56,167 @@
             background-color: #005f99;
         }
 
-        #nav a {
-            text-transform: none !important;
+        .project-intro {
+            text-align: center;
+            margin-bottom: 40px;
         }
 
-        .accordion {
-            background-color: #eef6fc;
-            color: #222;
-            cursor: pointer;
-            padding: 18px;
-            width: 100%;
-            border: none;
-            border-radius: 8px;
-            text-align: left;
-            outline: none;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            transition: all 0.3s ease-in-out;
+        .project-intro p {
+            max-width: 700px;
+            margin: 0 auto 20px auto;
         }
 
-        .accordion:hover {
-            background-color: #d4ebff;
-        }
-
-        .accordion:after {
-            content: '\25BC';
-            float: right;
-            margin-left: 5px;
-            transition: transform 0.3s;
-        }
-
-        .accordion.active:after {
-            transform: rotate(180deg);
-        }
-
-        .panel {
-            padding: 15px 20px;
-            background-color: white;
-            display: none;
-            overflow: hidden;
-            border-left: 4px solid #007acc;
-            border-radius: 0 0 8px 8px;
-            margin-bottom: 20px;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .panel p, .panel ul {
-            margin-bottom: 15px;
-        }
-
-        .team-section {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-        }
-
-        .team-member {
-            flex: 0 0 110px;
+        .cta-buttons {
+            margin-top: 20px;
             text-align: center;
         }
 
-        .team-member img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 50%;
-            margin-bottom: 8px;
+        .cta-buttons a {
+            margin: 0 auto;
         }
 
-        .team-member h4 {
-            margin: 0;
-            font-size: 13px;
+        .quick-overview {
+            display: flex;
+            justify-content: space-between;
+            margin: 60px 0;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
-        .tech-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-        }
-
-        .tech-card {
-            background: #f0f8ff;
-            padding: 16px;
+        .quick-card {
+            flex: 1;
+            min-width: 200px;
+            background: white;
             border-radius: 10px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-            transition: transform 0.3s ease;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .tech-card:hover {
-            transform: scale(1.02);
+        .quick-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .tech-card h4 {
-            margin-top: 0;
-            margin-bottom: 8px;
-            color: #005f99;
+        .mission-vision-section {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 60px;
+            text-align: center;
+        }
+
+        .mv-card {
+            flex: 1 1 300px;
+            max-width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mv-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .mv-card h3 {
+            color: #007acc;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .mv-card p {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.6;
+        }
+
+        #banner span {
+            text-transform: none !important;
         }
     </style>
 </head>
 <body>
-<div id="page-wrapper">
-    <!-- Header -->
-    <div id="header-wrapper">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <header id="header">
-                        <nav id="nav">
-                            <a href="index.html">Home</a>
-                            <a href="twocolumn1.html" class="current-page-item">About</a>
-                            <a href="twocolumn2.html">Dashboard</a>
-                            <a href="onecolumn.html">Contact</a>
-                        </nav>
-                    </header>
+    <div id="page-wrapper">
+
+        <!-- Header -->
+        <div id="header-wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <header id="header">
+                            <nav id="nav">
+                                <a href="index.html" class="current-page-item">Home</a>
+                                <a href="twocolumn1.html">About</a>
+                                <a href="twocolumn2.html">Dashboard</a>
+                                <a href="onecolumn.html">Contact</a>
+                            </nav>
+                        </header>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Main -->
-    <div id="main">
-        <div class="container">
-
-            <button class="accordion">🎯 Project Mission</button>
-            <div class="panel">
-                <p>D-Fliers is a student-led research team using artificial intelligence to address challenges in air travel reliability, particularly those driven by climate change. Our predictive models leverage historical flight data from the BTS and weather data from the Visual Crossing API to estimate potential delays before they happen.
-With the rise in climate-induced disruptions, we believe it's time to bridge data science, environmental awareness, and aviation planning.</p>
-            </div>
-
-            <button class="accordion">🧪 Technical Summary</button>
-            <div class="panel">
-                <div class="tech-grid">
-                    <div class="tech-card">
-                        <h4>🧠 AI Models Used</h4>
-                        <p>We leverage a combination of models tailored to different tasks including Logistic Regression for baseline comparisons, XGBoost for structured tabular insights, and LSTM for sequence learning.</p>
-                    </div>
-                    <div class="tech-card">
-                        <h4>🌐 Data Sources</h4>
-                        <p>We pull real-world data from FAA (flight logs), NOAA (climate conditions), OpenSky (air traffic), and BTS (transport stats).</p>
-                    </div>
-                    <div class="tech-card">
-                        <h4>🔄 Model Pipeline</h4>
-                        <p>Our system transforms raw data through cleaning, feature engineering, and modeling to deliver actionable flight delay predictions. (Include pipeline graphic here)</p>
+        <!-- Banner -->
+        <div id="banner-wrapper">
+            <div class="container">
+                <div id="banner">
+                    <h2>AI-Driven Flight Delay Prediction Model for Climate-Resilient Airspace Management</h2>
+                    <span>Powered by D-Fliers</span>
+                    <div class="cta-buttons">
+                        <a href="twocolumn2.html" class="button">Check Delay Status</a>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <button class="accordion">👥 Meet the Team</button>
-            <div class="panel">
-                <section class="team-section">
-                    <div class="team-member">
-                        <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
-                        <h4><a href="https://www.linkedin.com/in/kofinyarko/" target="_blank">Dr. Kofi Nyarko</a></h4>
+        <!-- Main -->
+        <div id="main">
+            <div class="container">
+
+                <!-- Quick Overview -->
+                <section class="quick-overview">
+                    <div class="quick-card">
+                        <h3>🔍 What We Do</h3>
+                        <p>Predict delays using Machine Learning & Artificial Intelligence</p>
                     </div>
-                    <div class="team-member">
-                        <img src="images/pic3.jpg" alt="Abiola Ajala" />
-                        <h4><a href="https://www.linkedin.com/in/abiola-ajala-89a400272/" target="_blank">Abiola Ajala</a></h4>
+                    <div class="quick-card">
+                        <h3>🌪 Why It Matters</h3>
+                        <p>Climate resilience & Better flight planning</p>
                     </div>
-                    <div class="team-member">
-                        <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
-                        <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
-                    </div>
-                    <div class="team-member">
-                        <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
-                        <h4><a href="https://www.linkedin.com/in/tahia-tajnim-a21788231/" target="_blank">Tahia Tajnim</a></h4>
-                    </div>
-                    <div class="team-member">
-                        <img src="images/mypic.jpeg" alt="Raj Bariya" />
-                        <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
-                    </div>
-                    <div class="team-member">
-                        <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
-                        <h4><a href="https://www.linkedin.com/in/quyme-brice-1a9588169/" target="_blank">Quyme Brice</a></h4>
-                    </div>
-                    <div class="team-member">
-                        <img src="images/pic1.jpg" alt="Kyle Burke" />
-                        <h4><a href="https://www.linkedin.com/in/kyle-burke-32912b14a/" target="_blank">Kyle Burke</a></h4>
+                    <div class="quick-card">
+                        <h3>🧠 How It Works</h3>
+                        <p>Real-time Weather Data + Historical Flight Data</p>
                     </div>
                 </section>
-            </div>
 
-            <button class="accordion">📜 Publications or Milestones</button>
-            <div class="panel">
-                <ul>
-                    <li><a href="#">Link to papers</a></li>
-                    <li><a href="#">Poster or conference mentions</a></li>
-                    <li><a href="#">Project milestones or timeline graphic</a></li>
-                </ul>
-            </div>
+                <!-- Project Intro -->
+                <section class="project-intro">
+                    <h2>Welcome to the D-Fliers</h2>
+                    <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
+                    <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
+                </section>
 
+                <!-- Mission & Vision Section -->
+                <section class="mission-vision-section">
+                    <div class="mv-card">
+                        <h3>🎯 Mission</h3>
+                        <p>To harness artificial intelligence for predicting flight delays caused by climate-related events, providing real-time insights that empower travelers, airlines, and stakeholders to make smarter, data-driven decisions.</p>
+                    </div>
+                    <div class="mv-card">
+                        <h3>🌍 Vision</h3>
+                        <p>To build a climate-resilient airspace system where predictive technology minimizes disruption and transforms the future of air travel.</p>
+                    </div>
+                </section>
+
+            </div>
         </div>
-    </div>
 
-    <!-- Footer -->
-    <div id="footer-wrapper">
+        <!-- Footer -->
         <div class="container">
             <div class="row">
                 <div class="col-12">
@@ -265,28 +226,7 @@ With the rise in climate-induced disruptions, we believe it's time to bridge dat
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
-<!-- Scripts -->
-<script src="assets/js/jquery.min.js"></script>
-<script src="assets/js/browser.min.js"></script>
-<script src="assets/js/breakpoints.min.js"></script>
-<script src="assets/js/util.js"></script>
-<script src="assets/js/main.js"></script>
-<script>
-    const acc = document.getElementsByClassName("accordion");
-    for (let i = 0; i < acc.length; i++) {
-        acc[i].addEventListener("click", function () {
-            this.classList.toggle("active");
-            const panel = this.nextElementSibling;
-            if (panel.style.display === "block") {
-                panel.style.display = "none";
-            } else {
-                panel.style.display = "block";
-            }
-        });
-    }
-</script>
+    </div>
 </body>
 </html>
