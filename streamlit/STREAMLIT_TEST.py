@@ -128,7 +128,7 @@ st.markdown("""
 def load_model():
     """Load the saved model and components"""
     try:
-        with open('test02.pkl', 'rb') as f:
+        with open('models/test02.pkl', 'rb') as f:
             model_package = pickle.load(f)
 
         return (
