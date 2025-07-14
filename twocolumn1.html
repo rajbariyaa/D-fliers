@@ -50,12 +50,55 @@
             background-color: #005f99;
         }
 
+        .accordion {
+            background-color: #e8f4fc;
+            color: #222;
+            cursor: pointer;
+            padding: 16px;
+            width: 100%;
+            border: none;
+            border-radius: 6px;
+            text-align: left;
+            outline: none;
+            font-size: 18px;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .accordion:hover {
+            background-color: #d4ebfc;
+        }
+
+        .accordion:after {
+            content: '\002B';
+            font-weight: bold;
+            float: right;
+        }
+
+        .accordion.active:after {
+            content: "\2212";
+        }
+
+        .panel {
+            padding: 0 18px;
+            background-color: white;
+            display: none;
+            overflow: hidden;
+            border-left: 3px solid #007acc;
+            margin-bottom: 20px;
+        }
+
+        .panel p, .panel ul {
+            margin-bottom: 15px;
+        }
+
         .team-section {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
-            margin-top: 40px;
+            margin-top: 20px;
         }
 
         .team-member {
@@ -106,40 +149,66 @@
     <div id="main">
         <div class="container">
             <header>
-                <h2>Meet the D-Fliers Team</h2>
-                <p>Our dedicated interdisciplinary team is using data science, AI, and engineering to tackle flight delays and climate challenges.</p>
+                <h2>About the D-Fliers Project</h2>
+                <p>We are an interdisciplinary team harnessing the power of artificial intelligence to mitigate the impact of weather-related flight delays and promote climate-resilient aviation systems.</p>
             </header>
 
-            <div class="team-section">
-                <div class="team-member">
-                    <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
-                    <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
-                </div>
-                <div class="team-member">
-                    <img src="images/pic3.jpg" alt="Abiola Ajala" />
-                    <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
-                </div>
-                <div class="team-member">
-                    <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
-                    <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
-                </div>
-                <div class="team-member">
-                    <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
-                    <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
-                </div>
-                <div class="team-member">
-                    <img src="images/mypic.jpeg" alt="Raj Bariya" />
-                    <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
-                </div>
-                <div class="team-member">
-                    <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
-                    <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
-                </div>
-                <div class="team-member">
-                    <img src="images/pic1.jpg" alt="Kyle Burke" />
-                    <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+            <button class="accordion">🎯 Project Mission</button>
+            <div class="panel">
+                <p>To leverage AI and real-time climate data to predict and reduce flight delays, supporting smarter, safer, and more climate-resilient air travel for all stakeholders.</p>
+            </div>
+
+            <button class="accordion">📊 Technical Summary</button>
+            <div class="panel">
+                <ul>
+                    <li><strong>Models Used:</strong> XGBoost Regressor, Random Forest</li>
+                    <li><strong>Project Pipeline:</strong> Data collection → Preprocessing → Modeling → Evaluation → Deployment</li>
+                    <li><strong>XAI Tools:</strong> SHAP, LIME for model explainability</li>
+                </ul>
+            </div>
+
+            <button class="accordion">👥 Meet the Team</button>
+            <div class="panel">
+                <div class="team-section">
+                    <div class="team-member">
+                        <img src="images/pic2.jpg" alt="Dr. Kofi Nyarko" />
+                        <h4><a href="https://www.morgan.edu/electrical-and-computer-engineering/faculty-and-staff/dr-kofi-nyarko" target="_blank">Dr. Kofi Nyarko</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/pic3.jpg" alt="Abiola Ajala" />
+                        <h4><a href="https://www.linkedin.com/in/abiola-ajala" target="_blank">Abiola Ajala</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/wisdom.jpg" alt="Wisdom Agbeve" />
+                        <h4><a href="https://www.linkedin.com/in/wisdom-agbeve" target="_blank">Wisdom Agbeve</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/Tahia(1).jpg" alt="Tahia Tajnim" />
+                        <h4><a href="https://www.linkedin.com/in/tahia-tajnim" target="_blank">Tahia Tajnim</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/mypic.jpeg" alt="Raj Bariya" />
+                        <h4><a href="https://www.linkedin.com/in/raj-bariya" target="_blank">Raj Bariya</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/BB%20picture.PNG" alt="Quyme Brice" />
+                        <h4><a href="https://www.linkedin.com/in/quyme-brice" target="_blank">Quyme Brice</a></h4>
+                    </div>
+                    <div class="team-member">
+                        <img src="images/pic1.jpg" alt="Kyle Burke" />
+                        <h4><a href="https://www.linkedin.com/in/kyle-burke" target="_blank">Kyle Burke</a></h4>
+                    </div>
                 </div>
             </div>
+
+            <button class="accordion">📚 Publications & References</button>
+            <div class="panel">
+                <ul>
+                    <li><a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" target="_blank">Full Research Document</a></li>
+                    <li><a href="https://github.com/your-repo-link" target="_blank">GitHub Repository</a></li>
+                </ul>
+            </div>
+
         </div>
     </div>
 
@@ -155,5 +224,20 @@
     </div>
 
 </div>
+
+<script>
+    const acc = document.getElementsByClassName("accordion");
+    for (let i = 0; i < acc.length; i++) {
+        acc[i].addEventListener("click", function () {
+            this.classList.toggle("active");
+            const panel = this.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        });
+    }
+</script>
 </body>
 </html>
