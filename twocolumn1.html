@@ -86,7 +86,7 @@
             background-color: white;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.4s ease;
+            transition: max-height 0.6s ease-in-out, padding 0.4s ease-in-out;
             border-left: 3px solid #007acc;
             margin-bottom: 20px;
         }
@@ -108,17 +108,17 @@
         }
 
         .summary-card {
-            background-color: #ffffff;
+            background-color: #e7f3fc;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            border-radius: 12px;
+            box-shadow: 0 6px 14px rgba(0, 122, 204, 0.1);
             flex: 1 1 250px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .summary-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 24px rgba(0, 122, 204, 0.25);
         }
 
         .summary-card h4 {
@@ -267,11 +267,10 @@
         acc[i].addEventListener("click", function () {
             this.classList.toggle("active");
             const panel = this.nextElementSibling;
-            if (panel.classList.contains("open")) {
-                panel.classList.remove("open");
-            } else {
-                panel.classList.add("open");
-            }
+            document.querySelectorAll('.panel').forEach(p => {
+                if (p !== panel) p.classList.remove('open');
+            });
+            panel.classList.toggle("open");
         });
     }
 </script>
