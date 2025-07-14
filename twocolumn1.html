@@ -86,7 +86,7 @@
             background-color: white;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.6s ease-in-out, padding 0.4s ease-in-out;
+            transition: max-height 0.4s ease-in-out, padding 0.3s ease-in-out;
             border-left: 3px solid #007acc;
             margin-bottom: 20px;
         }
@@ -265,12 +265,10 @@
     const acc = document.getElementsByClassName("accordion");
     for (let i = 0; i < acc.length; i++) {
         acc[i].addEventListener("click", function () {
-            this.classList.toggle("active");
             const panel = this.nextElementSibling;
-            document.querySelectorAll('.panel').forEach(p => {
-                if (p !== panel) p.classList.remove('open');
-            });
-            panel.classList.toggle("open");
+            const wasOpen = panel.classList.contains('open');
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('open'));
+            if (!wasOpen) panel.classList.add('open');
         });
     }
 </script>
