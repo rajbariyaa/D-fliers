@@ -102,6 +102,41 @@
         #banner span {
             text-transform: none !important;
         }
+
+        /* Mission & Vision Section */
+        .mission-vision {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 50px;
+        }
+
+        .mv-card {
+            flex: 1 1 300px;
+            background: #e8f4fc;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .mv-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 122, 204, 0.2);
+        }
+
+        .mv-card h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .mv-card p {
+            font-size: 15px;
+            color: #444;
+        }
     </style>
 </head>
 <body>
@@ -163,6 +198,18 @@
                     <h2>Welcome to the D-Fliers</h2>
                     <p>We are a research team exploring artificial intelligence applications to predict flight delays based on climate patterns and disruptions, helping improve airspace resiliency and passenger experience.</p>
                     <a href="https://docs.google.com/document/d/1AnllMwsWhLaxF6p0RDZlTjGU8f1LWePy/edit" class="button" target="_blank">Click to View Project Plan</a>
+                </section>
+
+                <!-- Mission & Vision -->
+                <section class="mission-vision">
+                    <div class="mv-card">
+                        <h3>🎯 Our Mission</h3>
+                        <p>To leverage AI and real-time climate data to predict and reduce flight delays, supporting smarter, safer, and more climate-resilient air travel for all stakeholders.</p>
+                    </div>
+                    <div class="mv-card">
+                        <h3>🌟 Our Vision</h3>
+                        <p>To become a trusted platform for predictive aviation analytics, enabling airlines and passengers to make proactive, data-informed decisions for a sustainable airspace future.</p>
+                    </div>
                 </section>
 
             </div>
