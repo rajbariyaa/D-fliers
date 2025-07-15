@@ -75,46 +75,18 @@
             margin: 0 auto;
         }
 
-        .quick-overview {
-            display: flex;
-            justify-content: space-between;
-            margin: 60px 0;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .quick-card {
-            flex: 1;
-            min-width: 200px;
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .quick-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        #banner span {
-            text-transform: none !important;
-        }
-
-        /* Mission & Vision Section */
-        .mission-vision {
+        /* Unified Card Style for Overview & Mission/Vision */
+        .info-section {
             display: flex;
             justify-content: center;
             align-items: stretch;
             gap: 20px;
             flex-wrap: wrap;
-            margin-top: 50px;
+            margin: 50px 0;
         }
 
-        .mv-card {
-            flex: 1 1 300px;
+        .info-card {
+            flex: 1 1 250px;
             background: #e8f4fc;
             border-radius: 10px;
             padding: 25px;
@@ -123,19 +95,23 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .mv-card:hover {
+        .info-card:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 8px 20px rgba(0, 122, 204, 0.2);
         }
 
-        .mv-card h3 {
+        .info-card h3 {
             font-size: 20px;
             margin-bottom: 15px;
         }
 
-        .mv-card p {
+        .info-card p {
             font-size: 15px;
             color: #444;
+        }
+
+        #banner span {
+            text-transform: none !important;
         }
     </style>
 </head>
@@ -177,17 +153,17 @@
         <div id="main">
             <div class="container">
 
-                <!-- Quick Overview -->
-                <section class="quick-overview">
-                    <div class="quick-card">
+                <!-- Quick Overview (Now Same Style as Mission & Vision) -->
+                <section class="info-section">
+                    <div class="info-card">
                         <h3>🔍 What We Do</h3>
                         <p>Predict delays using Machine Learning & Artificial Intelligence</p>
                     </div>
-                    <div class="quick-card">
+                    <div class="info-card">
                         <h3>🌪 Why It Matters</h3>
                         <p>Climate resilience & Better flight planning</p>
                     </div>
-                    <div class="quick-card">
+                    <div class="info-card">
                         <h3>🧠 How It Works</h3>
                         <p>Real-time Weather Data + Historical Flight Data</p>
                     </div>
@@ -201,12 +177,12 @@
                 </section>
 
                 <!-- Mission & Vision -->
-                <section class="mission-vision">
-                    <div class="mv-card">
+                <section class="info-section">
+                    <div class="info-card">
                         <h3>🎯 Our Mission</h3>
                         <p>To leverage AI and real-time climate data to predict and reduce flight delays, supporting smarter, safer, and more climate-resilient air travel for all stakeholders.</p>
                     </div>
-                    <div class="mv-card">
+                    <div class="info-card">
                         <h3>🌟 Our Vision</h3>
                         <p>To become a trusted platform for predictive aviation analytics, enabling airlines and passengers to make proactive, data-informed decisions for a sustainable airspace future.</p>
                     </div>
