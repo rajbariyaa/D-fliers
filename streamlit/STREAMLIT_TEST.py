@@ -225,12 +225,13 @@ def load_historical_data_safely():
         if LOCAL_DATA_FILE.exists():
             try:
                 st.info("Checking cached data...")
-                # Try to load just a small sample first
+                # Try to load just a small sample first to verify file integrity
                 df_test = pd.read_csv(LOCAL_DATA_FILE, nrows=5)
                 
-                # If sample loads successfully, try loading more
-                # For demo purposes, load only first 10,000 rows to avoid memory issues
+                # If sample loads successfully, load the full dataset
+                st.info("Loading full dataset...")
                 df = pd.read_csv(LOCAL_DATA_FILE)
+                st.success(f"✅ Loaded cached data: {len(df):,} rows")
                 return df
             except Exception as e:
                 st.warning(f"Cached file appears corrupted: {str(e)}")
@@ -251,8 +252,10 @@ def load_historical_data_safely():
         
         if success:
             try:
-                # Load only a sample to avoid memory issues
+                # Load the full dataset
+                st.info("Loading full dataset...")
                 df = pd.read_csv(LOCAL_DATA_FILE)
+                st.success(f"✅ Downloaded and loaded full data: {len(df):,} rows")
                 return df
             except Exception as e:
                 st.error(f"❌ Error reading downloaded file: {str(e)}")
