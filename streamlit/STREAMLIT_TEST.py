@@ -11,7 +11,6 @@ import gc
 from pathlib import Path
 import time
 import traceback
-import psutil
 
 # Suppress warnings
 warnings.filterwarnings('ignore')
@@ -36,12 +35,19 @@ MAX_MEMORY_GB = 1.5  # Conservative limit for Streamlit Cloud
 CHUNK_SIZE = 50000   # Process in chunks if needed
 
 def get_memory_usage():
-    """Get current memory usage"""
+    """Get current memory usage using built-in methods"""
     try:
-        process = psutil.Process(os.getpid())
-        memory_mb = process.memory_info().rss / 1024 / 1024
+        # Simple memory tracking using garbage collector stats
+        import resource
+        memory_kb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        # On Linux, this is in KB, on macOS it's in bytes
+        if sys.platform == 'darwin':  # macOS
+            memory_mb = memory_kb / 1024 / 1024
+        else:  # Linux
+            memory_mb = memory_kb / 1024
         return memory_mb
     except:
+        # Fallback: estimate based on DataFrame sizes if resource unavailable
         return 0
 
 def log_memory_usage(message=""):
@@ -49,6 +55,8 @@ def log_memory_usage(message=""):
     memory_mb = get_memory_usage()
     if memory_mb > 0:
         st.write(f"🧠 Memory: {memory_mb:.1f} MB {message}")
+    else:
+        st.write(f"🧠 Memory monitoring unavailable {message}")
     return memory_mb
 
 # Create data directory
@@ -163,21 +171,13 @@ def load_data_progressively():
             file_size_mb = LOCAL_DATA_FILE.stat().st_size / (1024 * 1024)
             st.info(f"📊 Local file size: {file_size_mb:.1f} MB")
             
-            # Memory check
-            current_memory = get_memory_usage()
-            estimated_memory_needed = file_size_mb * 2.5  # CSV typically needs 2-3x memory
-            available_memory = (MAX_MEMORY_GB * 1024) - current_memory
-            
-            st.info(f"🧠 Current memory: {current_memory:.1f} MB")
-            st.info(f"🧠 Estimated needed: {estimated_memory_needed:.1f} MB")
-            st.info(f"🧠 Available: {available_memory:.1f} MB")
-            
-            # Decide loading strategy
-            if estimated_memory_needed > available_memory:
-                st.warning("⚠️ File may be too large for available memory. Using chunked loading...")
+            # Conservative memory check - if file is larger than 500MB, use chunked loading
+            # This is conservative since Streamlit Cloud has limited memory
+            if file_size_mb > 500:
+                st.warning(f"⚠️ Large file detected ({file_size_mb:.1f} MB). Using smart loading strategy...")
                 return load_data_in_chunks()
             else:
-                st.info("✅ Sufficient memory available. Loading full dataset...")
+                st.info("✅ File size manageable. Loading full dataset...")
                 return load_full_dataset()
         else:
             # Download first
@@ -233,28 +233,29 @@ def load_data_in_chunks():
         total_rows = sum(1 for _ in open(LOCAL_DATA_FILE)) - 1  # -1 for header
         st.info(f"📊 Total rows: {total_rows:,}")
         
-        # Determine sample size based on available memory
-        current_memory = get_memory_usage()
-        available_memory = (MAX_MEMORY_GB * 1024) - current_memory
+        # Conservative approach: load a reasonable sample
+        # For large datasets, use 100k rows as a good balance between performance and completeness
+        max_rows = min(100000, total_rows)
         
-        # Conservative estimate: 1 MB per 1000 rows
-        max_rows = min(int(available_memory * 1000), total_rows)
+        st.info(f"📊 Loading sample of {max_rows:,} rows for optimal performance")
         
-        if max_rows < 10000:
-            max_rows = 10000  # Minimum useful sample
+        if max_rows < total_rows:
+            # Load random sample
+            skip_rows = sorted(np.random.choice(range(1, total_rows + 1), 
+                                              size=total_rows - max_rows, 
+                                              replace=False))
             
-        st.info(f"📊 Loading sample of {max_rows:,} rows due to memory constraints")
+            df = pd.read_csv(LOCAL_DATA_FILE, skiprows=skip_rows, low_memory=False)
+        else:
+            # Load all rows if dataset is small
+            df = pd.read_csv(LOCAL_DATA_FILE, low_memory=False)
         
-        # Load random sample
-        skip_rows = sorted(np.random.choice(range(1, total_rows + 1), 
-                                          size=total_rows - max_rows, 
-                                          replace=False))
-        
-        df = pd.read_csv(LOCAL_DATA_FILE, skiprows=skip_rows, low_memory=False)
         df = optimize_dataframe_memory(df)
         
         st.success(f"✅ Loaded sample: {len(df):,} rows")
-        st.info(f"📈 This represents {len(df)/total_rows*100:.1f}% of the full dataset")
+        
+        if len(df) < total_rows:
+            st.info(f"📈 This represents {len(df)/total_rows*100:.1f}% of the full dataset")
         
         return df
         
@@ -417,11 +418,15 @@ def main():
         
         with col3:
             memory_mb = get_memory_usage()
-            if memory_mb < MAX_MEMORY_GB * 1024 * 0.8:
-                st.success("✅ Memory OK")
+            if memory_mb > 0:
+                if memory_mb < MAX_MEMORY_GB * 1024 * 0.8:
+                    st.success("✅ Memory OK")
+                else:
+                    st.warning("⚠️ High Memory")
+                st.caption(f"{memory_mb:.0f} MB")
             else:
-                st.warning("⚠️ High Memory")
-            st.caption(f"{memory_mb:.0f} MB")
+                st.info("ℹ️ Memory Status")
+                st.caption("Monitoring N/A")
         
         # Main interface
         if model:
