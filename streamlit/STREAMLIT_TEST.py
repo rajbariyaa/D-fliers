@@ -5,6 +5,8 @@ import pickle
 import datetime
 import requests
 import warnings
+import os
+from pathlib import Path
 from sklearn.preprocessing import LabelEncoder
 import plotly.graph_objects as go
 import plotly.express as px
@@ -20,7 +22,17 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for styling
+# Configuration for GitHub releases
+GITHUB_REPO = "your-username/your-repo-name"  # Replace with your repo
+RELEASE_TAG = "latest"  # or specific tag like "v1.0.0"
+DATA_FILENAME = "merged_flights_weather.csv"
+LOCAL_DATA_DIR = Path("data")
+LOCAL_DATA_FILE = LOCAL_DATA_DIR / DATA_FILENAME
+
+# Create data directory if it doesn't exist
+LOCAL_DATA_DIR.mkdir(exist_ok=True)
+
+# Custom CSS for styling (keeping your existing styles)
 st.markdown("""
 <style>
     .main-header {
@@ -124,6 +136,66 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
+def download_file_from_github_release(repo, tag, filename, local_path, chunk_size=8192):
+    """
+    Download a file from GitHub releases with progress tracking
+    """
+    try:
+        # Get release information
+        if tag == "latest":
+            api_url = f"https://api.github.com/repos/{repo}/releases/latest"
+        else:
+            api_url = f"https://api.github.com/repos/{repo}/releases/tags/{tag}"
+        
+        response = requests.get(api_url, timeout=30)
+        response.raise_for_status()
+        release_data = response.json()
+        
+        # Find the asset
+        download_url = None
+        file_size = None
+        
+        for asset in release_data.get('assets', []):
+            if asset['name'] == filename:
+                download_url = asset['browser_download_url']
+                file_size = asset['size']
+                break
+        
+        if not download_url:
+            raise FileNotFoundError(f"File '{filename}' not found in release assets")
+        
+        # Create progress bar
+        progress_bar = st.progress(0)
+        status_text = st.empty()
+        
+        # Download the file
+        response = requests.get(download_url, stream=True, timeout=30)
+        response.raise_for_status()
+        
+        downloaded_size = 0
+        
+        with open(local_path, 'wb') as f:
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    f.write(chunk)
+                    downloaded_size += len(chunk)
+                    
+                    if file_size:
+                        progress = downloaded_size / file_size
+                        progress_bar.progress(progress)
+                        status_text.text(f"Downloaded {downloaded_size / (1024*1024):.1f} MB / {file_size / (1024*1024):.1f} MB")
+        
+        progress_bar.progress(1.0)
+        status_text.text("Download completed!")
+        
+        return True, "Download successful"
+        
+    except requests.exceptions.RequestException as e:
+        return False, f"Network error: {str(e)}"
+    except Exception as e:
+        return False, f"Error: {str(e)}"
+
+
 @st.cache_data
 def load_model():
     """Load the saved model and components"""
@@ -148,27 +220,57 @@ def load_model():
 
 @st.cache_data
 def load_historical_data():
-    """Load historical data for reference"""
-    try:
-        df = pd.read_csv("merged_flights_weather.csv")
-        return df
-    except FileNotFoundError:
-        st.warning("Historical data file not found. Using fallback data.")
-        return pd.DataFrame()
-    except Exception as e:
-        st.warning(f"Error loading historical data: {str(e)}")
+    """
+    Load historical data from GitHub release with local caching
+    """
+    # Check if file exists locally
+    if LOCAL_DATA_FILE.exists():
+        try:
+            # Verify the file is not corrupted by checking if it can be read
+            df = pd.read_csv(LOCAL_DATA_FILE, nrows=1)  # Read just first row to test
+            df = pd.read_csv(LOCAL_DATA_FILE)  # Read full file
+            st.success(f"✅ Loaded cached data: {len(df):,} rows")
+            return df
+        except Exception as e:
+            st.warning(f"Cached file appears corrupted. Re-downloading... Error: {str(e)}")
+            # Remove corrupted file
+            LOCAL_DATA_FILE.unlink()
+    
+    # File doesn't exist or is corrupted, download from GitHub
+    st.info(f"📥 Downloading {DATA_FILENAME} from GitHub releases...")
+    
+    success, message = download_file_from_github_release(
+        GITHUB_REPO, 
+        RELEASE_TAG, 
+        DATA_FILENAME, 
+        LOCAL_DATA_FILE
+    )
+    
+    if success:
+        try:
+            df = pd.read_csv(LOCAL_DATA_FILE)
+            st.success(f"✅ Downloaded and loaded data: {len(df):,} rows")
+            return df
+        except Exception as e:
+            st.error(f"❌ Error reading downloaded file: {str(e)}")
+            return pd.DataFrame()
+    else:
+        st.error(f"❌ Failed to download data: {message}")
         return pd.DataFrame()
 
 
 @st.cache_data
 def load_airports_data():
-    """Load airports data"""
+    """Load airports data - modify this similarly if airports.csv is also in releases"""
     try:
-        airports_df = pd.read_csv("airports.csv")
-        return airports_df
-    except FileNotFoundError:
-        st.warning("Airports data file not found. Using fallback coordinates.")
-        return pd.DataFrame()
+        # First try local file
+        if os.path.exists("airports.csv"):
+            airports_df = pd.read_csv("airports.csv")
+            return airports_df
+        else:
+            # If you also have airports.csv in releases, download it here
+            st.warning("Airports data file not found locally. Using fallback coordinates.")
+            return pd.DataFrame()
     except Exception as e:
         st.warning(f"Error loading airports data: {str(e)}")
         return pd.DataFrame()
@@ -425,6 +527,9 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
+    # Check data status first
+    data_status_placeholder = st.empty()
+    
     # Load model and data
     model, encoders, feature_columns, created_date, version = load_model()
 
@@ -432,8 +537,14 @@ def main():
         st.stop()
 
     # Load historical data and airports data
+    with data_status_placeholder.container():
+        st.info("📊 Loading historical flight data...")
+    
     df = load_historical_data()
     airports_df = load_airports_data()
+    
+    # Clear the loading message
+    data_status_placeholder.empty()
 
     # Sidebar with model info
     with st.sidebar:
@@ -441,6 +552,20 @@ def main():
         st.markdown(f"**Created:** {created_date}")
         st.markdown(f"**Version:** {version}")
         st.markdown(f"**Features:** {len(feature_columns) if feature_columns is not None else 'Unknown'}")
+        
+        # Data status
+        st.markdown("### Data Status")
+        if not df.empty:
+            st.markdown(f"**Rows:** {len(df):,}")
+            if 'ORIGIN_AIRPORT' in df.columns:
+                unique_routes = df.groupby(['ORIGIN_AIRPORT', 'DESTINATION_AIRPORT']).size().shape[0]
+                st.markdown(f"**Unique Routes:** {unique_routes:,}")
+            
+            # File size info
+            file_size_mb = LOCAL_DATA_FILE.stat().st_size / (1024*1024) if LOCAL_DATA_FILE.exists() else 0
+            st.markdown(f"**File Size:** {file_size_mb:.1f} MB")
+        else:
+            st.markdown("**Status:** No data loaded")
 
         st.markdown("### Weather Settings")
         use_weather = st.checkbox("Use Real-time Weather Forecasts", value=True)
@@ -448,14 +573,6 @@ def main():
         api_key = None
         if use_weather:
             api_key = 'KZG5KUC6LL62Z5LHDDZ3TTGVC'  # Default API key
-            # Uncomment below to allow custom API key input
-            # api_key = st.text_input(
-            #     "Visual Crossing API Key",
-            #     type="password",
-            #     value='KZG5KUC6LL62Z5LHDDZ3TTGVC',
-            #     placeholder="Enter your API key...",
-            #     help="Get your free API key from Visual Crossing Weather"
-            # )
 
         st.markdown("### Popular Routes")
         if not df.empty and 'ORIGIN_AIRPORT' in df.columns:
@@ -651,4 +768,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
