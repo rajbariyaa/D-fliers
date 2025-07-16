@@ -114,7 +114,7 @@ def load_model_safe():
 def load_airports_data_safe():
     """Safely load airports data"""
     try:
-        airports_df = pd.read_csv("airports.csv")
+        airports_df = pd.read_csv("streamlit/airports.csv")
         return airports_df
     except FileNotFoundError:
         st.warning(" Airports data file 'airports.csv' not found. Weather forecasts may be limited.")
