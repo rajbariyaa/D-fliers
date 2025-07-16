@@ -5,451 +5,663 @@ import pickle
 import datetime
 import requests
 import warnings
-import os
-import sys
-import gc
-from pathlib import Path
-import time
-import traceback
+from sklearn.preprocessing import LabelEncoder
+import plotly.graph_objects as go
+import plotly.express as px
 
-# Suppress warnings
 warnings.filterwarnings('ignore')
 
 # Page configuration
 st.set_page_config(
-    page_title="Flight Delay Predictor",
-    page_icon="✈️",
+    page_title="Flight Delay Predictor with Weather Analysis",
+    page_icon="🌤️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Configuration
-GITHUB_REPO = "rajbariyaa/D-fliers"
-RELEASE_TAG = "123"
-DATA_FILENAME = "merged_flights_weather.csv"
-LOCAL_DATA_DIR = Path("data")
-LOCAL_DATA_FILE = LOCAL_DATA_DIR / DATA_FILENAME
+# Simplified CSS for better compatibility
+st.markdown("""
+<style>
+    .main-header {
+        background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        text-align: center;
+        color: white;
+    }
+    
+    .weather-risk-high {
+        background-color: #ffebee;
+        border-left: 5px solid #f44336;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+    
+    .weather-risk-medium {
+        background-color: #fff3e0;
+        border-left: 5px solid #ff9800;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+    
+    .weather-risk-low {
+        background-color: #e8f5e8;
+        border-left: 5px solid #4caf50;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+    
+    .weather-factor {
+        background-color: #f5f5f5;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+        border-left: 3px solid #2196f3;
+    }
+    
+    .info-box {
+        background-color: #e3f2fd;
+        border-left: 4px solid #2196f3;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+    
+    .warning-box {
+        background-color: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+    
+    .success-box {
+        background-color: #d4edda;
+        border-left: 4px solid #28a745;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-# Memory management settings
-MAX_MEMORY_GB = 1.5  # Conservative limit for Streamlit Cloud
-CHUNK_SIZE = 50000   # Process in chunks if needed
 
-def get_memory_usage():
-    """Get current memory usage using built-in methods"""
+def load_model_safe():
+    """Safely load the saved model and components"""
     try:
-        # Simple memory tracking using garbage collector stats
-        import resource
-        memory_kb = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-        # On Linux, this is in KB, on macOS it's in bytes
-        if sys.platform == 'darwin':  # macOS
-            memory_mb = memory_kb / 1024 / 1024
-        else:  # Linux
-            memory_mb = memory_kb / 1024
-        return memory_mb
-    except:
-        # Fallback: estimate based on DataFrame sizes if resource unavailable
-        return 0
+        with open('test02.pkl', 'rb') as f:
+            model_package = pickle.load(f)
 
-def log_memory_usage(message=""):
-    """Log current memory usage"""
-    memory_mb = get_memory_usage()
-    if memory_mb > 0:
-        st.write(f"🧠 Memory: {memory_mb:.1f} MB {message}")
-    else:
-        st.write(f"🧠 Memory monitoring unavailable {message}")
-    return memory_mb
+        return (
+            model_package['model'],
+            model_package['encoders'],
+            model_package['feature_columns'],
+            model_package.get('created_date', 'Unknown'),
+            model_package.get('version', 'Unknown')
+        )
+    except FileNotFoundError:
+        st.error(" Model file 'test02.pkl' not found. Please ensure the model file is in the correct directory.")
+        return None, None, None, None, None
+    except Exception as e:
+        st.error(f" Error loading model: {str(e)}")
+        return None, None, None, None, None
 
-# Create data directory
-try:
-    LOCAL_DATA_DIR.mkdir(exist_ok=True)
-except Exception as e:
-    st.error(f"Could not create data directory: {e}")
 
-def download_with_direct_url(repo, tag, filename, local_path):
-    """Download using direct GitHub URL"""
+def load_airports_data_safe():
+    """Safely load airports data"""
     try:
-        direct_url = f"https://github.com/{repo}/releases/download/{tag}/{filename}"
-        st.info(f"📥 Downloading from: {direct_url}")
-        
-        # Check if URL is accessible
-        head_response = requests.head(direct_url, timeout=10)
-        if head_response.status_code == 404:
-            st.error(f"❌ File not found at {direct_url}")
-            st.info("Please verify:")
-            st.info(f"1. Release '{tag}' exists at https://github.com/{repo}/releases")
-            st.info(f"2. File '{filename}' is uploaded to that release")
-            st.info("3. Release is published (not draft)")
-            return False, "File not found"
-        
-        response = requests.get(direct_url, stream=True, timeout=300)
+        airports_df = pd.read_csv("airports.csv")
+        return airports_df
+    except FileNotFoundError:
+        st.warning(" Airports data file 'airports.csv' not found. Weather forecasts may be limited.")
+        return pd.DataFrame()
+    except Exception as e:
+        st.warning(f" Error loading airports data: {str(e)}")
+        return pd.DataFrame()
+
+
+def get_weather_forecast(iata_code, date_str, api_key, airports_df=None):
+    """Get weather forecast from Visual Crossing API"""
+    if not api_key:
+        return None, "no_api_key"
+
+    try:
+        # Get coordinates for the airport
+        if airports_df is not None and not airports_df.empty:
+            if iata_code in airports_df['IATA_CODE'].values:
+                airport_row = airports_df[airports_df['IATA_CODE'] == iata_code].iloc[0]
+                lat, lon = airport_row['LATITUDE'], airport_row['LONGITUDE']
+            else:
+                return None, "unknown_airport"
+        else:
+            # Fallback coordinates for common airports
+            fallback_coords = {
+                'JFK': (40.6413, -73.7781),
+                'LAX': (33.9425, -118.4081),
+                'ORD': (41.9742, -87.9073),
+                'DFW': (32.8975, -97.0380),
+                'DEN': (39.8561, -104.6737)
+            }
+            if iata_code in fallback_coords:
+                lat, lon = fallback_coords[iata_code]
+            else:
+                return None, "unknown_airport"
+
+        # Visual Crossing API call
+        url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{lat},{lon}/{date_str}"
+
+        params = {
+            'key': api_key,
+            'unitGroup': 'metric',
+            'include': 'days',
+            'elements': 'temp,humidity,pressure,windspeed,winddir,cloudcover,visibility,conditions,precip,snow'
+        }
+
+        response = requests.get(url, params=params, timeout=15)
         response.raise_for_status()
-        
-        # Get file size
-        file_size = head_response.headers.get('content-length') or response.headers.get('content-length')
-        if file_size:
-            file_size = int(file_size)
-            file_size_mb = file_size / (1024 * 1024)
-            st.info(f"📊 File size: {file_size_mb:.1f} MB")
-            
-            # Check if we have enough space
-            available_memory = (MAX_MEMORY_GB * 1024) - get_memory_usage()
-            if file_size_mb > available_memory:
-                st.warning(f"⚠️ File size ({file_size_mb:.1f} MB) may exceed available memory ({available_memory:.1f} MB)")
-        
-        # Download with progress
-        downloaded_size = 0
-        progress_bar = st.progress(0)
-        status_text = st.empty()
-        
-        with open(local_path, 'wb') as f:
-            for chunk in response.iter_content(chunk_size=8192):
-                if chunk:
-                    f.write(chunk)
-                    downloaded_size += len(chunk)
-                    
-                    if file_size:
-                        progress = min(downloaded_size / file_size, 1.0)
-                        progress_bar.progress(progress)
-                        status_text.text(f"Downloaded: {downloaded_size / (1024*1024):.1f} MB")
-        
-        progress_bar.progress(1.0)
-        status_text.text("✅ Download completed!")
-        return True, "Download successful"
-        
-    except requests.exceptions.Timeout:
-        return False, "Download timeout - file may be too large"
-    except requests.exceptions.RequestException as e:
-        return False, f"Network error: {str(e)}"
+
+        data = response.json()
+
+        if 'days' not in data or len(data['days']) == 0:
+            return None, "no_data"
+
+        day_data = data['days'][0]
+
+        weather_features = {
+            'temperature': day_data.get('temp', 20.0),
+            'humidity': day_data.get('humidity', 50.0),
+            'pressure': day_data.get('pressure', 1013.25),
+            'wind_speed': day_data.get('windspeed', 10.0),
+            'wind_direction': day_data.get('winddir', 180.0),
+            'cloudiness': day_data.get('cloudcover', 25.0),
+            'visibility': day_data.get('visibility', 10.0),
+            'weather_desc': day_data.get('conditions', 'Clear'),
+            'precipitation': day_data.get('precip', 0.0),
+            'snow': day_data.get('snow', 0.0)
+        }
+
+        return weather_features, "success"
+
     except Exception as e:
-        return False, f"Error: {str(e)}"
+        return None, f"error: {str(e)}"
 
-def load_model_safely():
-    """Load model with comprehensive error handling"""
-    st.info("🔄 Loading model...")
+
+def analyze_weather_impact(weather_data, location_name):
+    """Analyze weather conditions and identify delay-causing factors"""
+    if not weather_data:
+        return [], "LOW"
     
-    model_paths = [
-        'models/test02.pkl',
-        'test02.pkl',
-        './models/test02.pkl',
-        './test02.pkl'
-    ]
+    delay_factors = []
+    risk_level = "LOW"
     
-    for path in model_paths:
-        if os.path.exists(path):
-            st.info(f"📂 Found model at: {path}")
-            try:
-                with open(path, 'rb') as f:
-                    model_package = pickle.load(f)
-                
-                model = model_package.get('model')
-                encoders = model_package.get('encoders', {})
-                feature_columns = model_package.get('feature_columns', [])
-                
-                # Test model
-                if model and hasattr(model, 'predict'):
-                    st.success("✅ Model loaded and validated")
-                    return model, encoders, feature_columns, 'Loaded', '1.0'
-                else:
-                    st.error("❌ Model object is invalid")
-                    
-            except Exception as e:
-                st.error(f"❌ Model loading failed: {str(e)}")
-                if "xgboost" in str(e).lower():
-                    st.error("🔧 XGBoost version compatibility issue detected")
-                    st.info("💡 Try updating the model with current XGBoost version")
+    # Define thresholds for weather conditions that typically cause delays
+    thresholds = {
+        'high_wind': 40,        # km/h
+        'low_visibility': 5,    # km
+        'heavy_rain': 10,       # mm
+        'snow_present': 0.5,    # cm
+        'extreme_cold': -10,    # °C
+        'extreme_heat': 35,     # °C
+    }
     
-    st.error("❌ No valid model found")
-    return None, {}, [], 'None', 'None'
-
-def load_data_progressively():
-    """Load data with memory management and progressive loading"""
-    st.info("🔄 Loading historical data...")
+    # Check each weather factor
+    if weather_data['wind_speed'] > thresholds['high_wind']:
+        severity = "HIGH" if weather_data['wind_speed'] > 60 else "MEDIUM"
+        delay_factors.append({
+            'factor': 'High Wind Speed',
+            'value': f"{weather_data['wind_speed']:.1f} km/h",
+            'threshold': f">{thresholds['high_wind']} km/h",
+            'severity': severity,
+            'impact': 'Can cause landing/takeoff delays and turbulence',
+            'location': location_name
+        })
+        if severity == "HIGH":
+            risk_level = "HIGH"
+        elif risk_level == "LOW":
+            risk_level = "MEDIUM"
     
-    try:
-        # Check if file exists locally
-        if LOCAL_DATA_FILE.exists():
-            file_size_mb = LOCAL_DATA_FILE.stat().st_size / (1024 * 1024)
-            st.info(f"📊 Local file size: {file_size_mb:.1f} MB")
-            
-            # Conservative memory check - if file is larger than 500MB, use chunked loading
-            # This is conservative since Streamlit Cloud has limited memory
-            if file_size_mb > 500:
-                st.warning(f"⚠️ Large file detected ({file_size_mb:.1f} MB). Using smart loading strategy...")
-                return load_data_in_chunks()
-            else:
-                st.info("✅ File size manageable. Loading full dataset...")
-                return load_full_dataset()
-        else:
-            # Download first
-            st.info("📥 File not found locally. Downloading...")
-            success, message = download_with_direct_url(
-                GITHUB_REPO, RELEASE_TAG, DATA_FILENAME, LOCAL_DATA_FILE
-            )
-            
-            if success:
-                return load_data_progressively()  # Recursive call after download
-            else:
-                st.error(f"❌ Download failed: {message}")
-                return pd.DataFrame()
+    if weather_data['visibility'] < thresholds['low_visibility']:
+        severity = "HIGH" if weather_data['visibility'] < 2 else "MEDIUM"
+        delay_factors.append({
+            'factor': 'Poor Visibility',
+            'value': f"{weather_data['visibility']:.1f} km",
+            'threshold': f"<{thresholds['low_visibility']} km",
+            'severity': severity,
+            'impact': 'Requires instrument approaches, reduces airport capacity',
+            'location': location_name
+        })
+        if severity == "HIGH":
+            risk_level = "HIGH"
+        elif risk_level == "LOW":
+            risk_level = "MEDIUM"
     
-    except Exception as e:
-        st.error(f"❌ Error in progressive loading: {str(e)}")
-        st.code(traceback.format_exc())
-        return pd.DataFrame()
-
-def load_full_dataset():
-    """Load the complete dataset"""
-    try:
-        st.info("📖 Reading full dataset...")
-        log_memory_usage("before loading")
-        
-        # Load with optimized dtypes
-        df = pd.read_csv(LOCAL_DATA_FILE, low_memory=False)
-        
-        log_memory_usage("after loading")
-        
-        # Optimize memory usage
-        st.info("🔧 Optimizing memory usage...")
-        df = optimize_dataframe_memory(df)
-        
-        log_memory_usage("after optimization")
-        
-        st.success(f"✅ Loaded full dataset: {len(df):,} rows, {len(df.columns)} columns")
-        return df
-        
-    except MemoryError:
-        st.error("❌ Out of memory loading full dataset. Switching to chunked loading...")
-        return load_data_in_chunks()
-    except Exception as e:
-        st.error(f"❌ Error loading full dataset: {str(e)}")
-        return load_data_in_chunks()
-
-def load_data_in_chunks():
-    """Load data in chunks to manage memory"""
-    try:
-        st.info("📚 Loading data in chunks...")
-        
-        # Get total rows first
-        total_rows = sum(1 for _ in open(LOCAL_DATA_FILE)) - 1  # -1 for header
-        st.info(f"📊 Total rows: {total_rows:,}")
-        
-        # Conservative approach: load a reasonable sample
-        # For large datasets, use 100k rows as a good balance between performance and completeness
-        max_rows = min(100000, total_rows)
-        
-        st.info(f"📊 Loading sample of {max_rows:,} rows for optimal performance")
-        
-        if max_rows < total_rows:
-            # Load random sample
-            skip_rows = sorted(np.random.choice(range(1, total_rows + 1), 
-                                              size=total_rows - max_rows, 
-                                              replace=False))
-            
-            df = pd.read_csv(LOCAL_DATA_FILE, skiprows=skip_rows, low_memory=False)
-        else:
-            # Load all rows if dataset is small
-            df = pd.read_csv(LOCAL_DATA_FILE, low_memory=False)
-        
-        df = optimize_dataframe_memory(df)
-        
-        st.success(f"✅ Loaded sample: {len(df):,} rows")
-        
-        if len(df) < total_rows:
-            st.info(f"📈 This represents {len(df)/total_rows*100:.1f}% of the full dataset")
-        
-        return df
-        
-    except Exception as e:
-        st.error(f"❌ Chunked loading failed: {str(e)}")
-        st.info("🔄 Falling back to minimal dataset...")
-        return load_minimal_dataset()
-
-def load_minimal_dataset():
-    """Load minimal dataset as last resort"""
-    try:
-        st.info("📝 Loading minimal dataset (first 5000 rows)...")
-        df = pd.read_csv(LOCAL_DATA_FILE, nrows=5000, low_memory=False)
-        df = optimize_dataframe_memory(df)
-        st.warning(f"⚠️ Using minimal dataset: {len(df):,} rows")
-        return df
-    except Exception as e:
-        st.error(f"❌ Even minimal loading failed: {str(e)}")
-        return pd.DataFrame()
-
-def optimize_dataframe_memory(df):
-    """Optimize DataFrame memory usage"""
-    try:
-        initial_memory = df.memory_usage(deep=True).sum() / 1024 / 1024
-        
-        for col in df.columns:
-            col_type = df[col].dtype
-            
-            if col_type != 'object':
-                c_min = df[col].min()
-                c_max = df[col].max()
-                
-                if str(col_type)[:3] == 'int':
-                    if c_min > np.iinfo(np.int8).min and c_max < np.iinfo(np.int8).max:
-                        df[col] = df[col].astype(np.int8)
-                    elif c_min > np.iinfo(np.int16).min and c_max < np.iinfo(np.int16).max:
-                        df[col] = df[col].astype(np.int16)
-                    elif c_min > np.iinfo(np.int32).min and c_max < np.iinfo(np.int32).max:
-                        df[col] = df[col].astype(np.int32)
-                
-                elif str(col_type)[:5] == 'float':
-                    if c_min > np.finfo(np.float32).min and c_max < np.finfo(np.float32).max:
-                        df[col] = df[col].astype(np.float32)
-        
-        final_memory = df.memory_usage(deep=True).sum() / 1024 / 1024
-        reduction = (initial_memory - final_memory) / initial_memory * 100
-        
-        if reduction > 0:
-            st.info(f"🎯 Memory optimized: {reduction:.1f}% reduction ({initial_memory:.1f}→{final_memory:.1f} MB)")
-        
-        return df
-        
-    except Exception as e:
-        st.warning(f"Memory optimization failed: {str(e)}")
-        return df
-
-def create_prediction_interface(model, encoders, feature_columns):
-    """Create the prediction interface"""
-    st.markdown("### ✈️ Flight Delay Prediction")
+    if weather_data['precipitation'] > thresholds['heavy_rain']:
+        severity = "HIGH" if weather_data['precipitation'] > 25 else "MEDIUM"
+        delay_factors.append({
+            'factor': 'Heavy Precipitation',
+            'value': f"{weather_data['precipitation']:.1f} mm",
+            'threshold': f">{thresholds['heavy_rain']} mm",
+            'severity': severity,
+            'impact': 'Reduces runway capacity, increases stopping distances',
+            'location': location_name
+        })
+        if severity == "HIGH":
+            risk_level = "HIGH"
+        elif risk_level == "LOW":
+            risk_level = "MEDIUM"
     
-    with st.form("prediction_form"):
+    if weather_data['snow'] > thresholds['snow_present']:
+        severity = "HIGH" if weather_data['snow'] > 5 else "MEDIUM"
+        delay_factors.append({
+            'factor': 'Snow Conditions',
+            'value': f"{weather_data['snow']:.1f} cm",
+            'threshold': f">{thresholds['snow_present']} cm",
+            'severity': severity,
+            'impact': 'Requires de-icing, runway clearing, major delays possible',
+            'location': location_name
+        })
+        risk_level = "HIGH"  # Snow always high risk
+    
+    if weather_data['temperature'] < thresholds['extreme_cold']:
+        severity = "HIGH" if weather_data['temperature'] < -20 else "MEDIUM"
+        delay_factors.append({
+            'factor': 'Extreme Cold',
+            'value': f"{weather_data['temperature']:.1f}°C",
+            'threshold': f"<{thresholds['extreme_cold']}°C",
+            'severity': severity,
+            'impact': 'Requires extensive de-icing, equipment issues possible',
+            'location': location_name
+        })
+        if severity == "HIGH":
+            risk_level = "HIGH"
+        elif risk_level == "LOW":
+            risk_level = "MEDIUM"
+    
+    if weather_data['temperature'] > thresholds['extreme_heat']:
+        severity = "MEDIUM"
+        delay_factors.append({
+            'factor': 'Extreme Heat',
+            'value': f"{weather_data['temperature']:.1f}°C",
+            'threshold': f">{thresholds['extreme_heat']}°C",
+            'severity': severity,
+            'impact': 'Reduces aircraft performance, weight restrictions possible',
+            'location': location_name
+        })
+        if risk_level == "LOW":
+            risk_level = "MEDIUM"
+    
+    # Check for severe weather conditions
+    severe_conditions = ['thunderstorm', 'storm', 'fog', 'mist', 'freezing', 'blizzard', 'hail']
+    if any(condition in weather_data['weather_desc'].lower() for condition in severe_conditions):
+        severity = "HIGH" if any(condition in weather_data['weather_desc'].lower() 
+                               for condition in ['thunderstorm', 'blizzard', 'freezing']) else "MEDIUM"
+        delay_factors.append({
+            'factor': 'Severe Weather Conditions',
+            'value': weather_data['weather_desc'],
+            'threshold': 'Clear/Partly Cloudy preferred',
+            'severity': severity,
+            'impact': 'Various operational restrictions and safety concerns',
+            'location': location_name
+        })
+        if severity == "HIGH":
+            risk_level = "HIGH"
+        elif risk_level == "LOW":
+            risk_level = "MEDIUM"
+    
+    return delay_factors, risk_level
+
+
+def display_weather_analysis(origin_weather, dest_weather, origin_code, dest_code, prediction):
+    """Display comprehensive weather analysis"""
+    st.markdown("###  Weather Delay Analysis")
+    
+    # Analyze weather impact for both locations
+    origin_factors, origin_risk = analyze_weather_impact(origin_weather, f"Origin ({origin_code})")
+    dest_factors, dest_risk = analyze_weather_impact(dest_weather, f"Destination ({dest_code})")
+    
+    # Determine overall risk
+    all_factors = origin_factors + dest_factors
+    overall_risk = "LOW"
+    if origin_risk == "HIGH" or dest_risk == "HIGH":
+        overall_risk = "HIGH"
+    elif origin_risk == "MEDIUM" or dest_risk == "MEDIUM":
+        overall_risk = "MEDIUM"
+    
+    # Risk level display
+    risk_class = f"weather-risk-{overall_risk.lower()}"
+    risk_icon = {"LOW": "🟢", "MEDIUM": "🟡", "HIGH": "🔴"}[overall_risk]
+    
+    st.markdown(f"""
+    <div class="{risk_class}">
+        <h4>{risk_icon} Overall Weather Risk: {overall_risk}</h4>
+        <p>Based on analysis of weather conditions at both origin and destination</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Weather factors analysis
+    if all_factors:
+        st.markdown("#### Weather Factors Contributing to Delays")
+        
         col1, col2 = st.columns(2)
         
         with col1:
-            origin = st.text_input("Origin Airport", value="JFK", max_chars=3).upper()
-            airline = st.selectbox("Airline", ["AA", "UA", "DL", "WN", "AS", "B6"])
-            departure_time = st.time_input("Departure Time", value=datetime.time(14, 0))
+            st.markdown(f"**🛫 {origin_code} Weather Issues**")
+            if origin_factors:
+                for factor in origin_factors:
+                    severity_icon = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}[factor['severity']]
+                    st.markdown(f"""
+                    <div class="weather-factor">
+                        <strong>{severity_icon} {factor['factor']}</strong><br>
+                        Current: {factor['value']} | Threshold: {factor['threshold']}<br>
+                        <em>{factor['impact']}</em>
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.markdown(" No significant weather issues detected")
         
         with col2:
-            destination = st.text_input("Destination Airport", value="LAX", max_chars=3).upper()
-            flight_date = st.date_input("Flight Date", value=datetime.date.today() + datetime.timedelta(days=1))
-            arrival_time = st.time_input("Arrival Time", value=datetime.time(17, 0))
-        
-        submitted = st.form_submit_button("🔮 Predict Delay", use_container_width=True)
-        
-        if submitted:
-            if len(origin) != 3 or len(destination) != 3:
-                st.error("Airport codes must be exactly 3 letters!")
-                return
-            
-            try:
-                # Create prediction input
-                input_data = {
-                    'SCHEDULED_DEPARTURE': departure_time.hour * 100 + departure_time.minute,
-                    'SCHEDULED_ARRIVAL': arrival_time.hour * 100 + arrival_time.minute,
-                    'ORIGIN_AIRPORT': origin,
-                    'DESTINATION_AIRPORT': destination,
-                    'AIRLINE': airline
-                }
-                
-                input_df = pd.DataFrame([input_data])
-                
-                # Handle missing features
-                for col in feature_columns:
-                    if col not in input_df.columns:
-                        input_df[col] = 0
-                
-                input_df = input_df.reindex(columns=feature_columns, fill_value=0)
-                
-                # Make prediction
-                prediction = model.predict(input_df)[0]
-                
-                # Display result with better formatting
-                if prediction <= 0:
-                    st.success(f"🎉 **ON TIME** - Arrives {abs(prediction):.0f} min early!")
-                elif prediction <= 15:
-                    st.info(f"✈️ **MINOR DELAY** - {prediction:.0f} minutes late")
-                elif prediction <= 30:
-                    st.warning(f"⚠️ **MODERATE DELAY** - {prediction:.0f} minutes late")
-                else:
-                    st.error(f"🚨 **MAJOR DELAY** - {prediction:.0f} minutes late")
-                
-            except Exception as e:
-                st.error(f"Prediction failed: {str(e)}")
+            st.markdown(f"**🛬 {dest_code} Weather Issues**")
+            if dest_factors:
+                for factor in dest_factors:
+                    severity_icon = {"HIGH": "🔴", "MEDIUM": "🟡", "LOW": "🟢"}[factor['severity']]
+                    st.markdown(f"""
+                    <div class="weather-factor">
+                        <strong>{severity_icon} {factor['factor']}</strong><br>
+                        Current: {factor['value']} | Threshold: {factor['threshold']}<br>
+                        <em>{factor['impact']}</em>
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.markdown(" No significant weather issues detected")
+    else:
+        st.markdown("""
+        <div class="success-box">
+            <h4> Favorable Weather Conditions</h4>
+            <p>No significant weather factors identified that would cause delays. Weather conditions appear favorable for on-time operations.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+def display_weather_forecast(origin_weather, dest_weather, origin_code, dest_code, flight_date):
+    """Display weather forecast information"""
+    st.markdown("###  Weather Forecast")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown(f"**🛫 Origin: {origin_code}**")
+        if origin_weather:
+            st.write(f"**Date:** {flight_date}")
+            st.write(f"**Conditions:** {origin_weather['weather_desc']}")
+            st.write(f"**Temperature:** {origin_weather['temperature']:.1f}°C")
+            st.write(f"**Humidity:** {origin_weather['humidity']:.1f}%")
+            st.write(f"**Wind Speed:** {origin_weather['wind_speed']:.1f} km/h")
+            st.write(f"**Visibility:** {origin_weather['visibility']:.1f} km")
+            st.write(f"**Precipitation:** {origin_weather['precipitation']:.1f} mm")
+            if origin_weather['snow'] > 0:
+                st.write(f"**Snow:** {origin_weather['snow']:.1f} cm")
+        else:
+            st.write("Weather forecast not available")
+    
+    with col2:
+        st.markdown(f"**🛬 Destination: {dest_code}**")
+        if dest_weather:
+            st.write(f"**Date:** {flight_date}")
+            st.write(f"**Conditions:** {dest_weather['weather_desc']}")
+            st.write(f"**Temperature:** {dest_weather['temperature']:.1f}°C")
+            st.write(f"**Humidity:** {dest_weather['humidity']:.1f}%")
+            st.write(f"**Wind Speed:** {dest_weather['wind_speed']:.1f} km/h")
+            st.write(f"**Visibility:** {dest_weather['visibility']:.1f} km")
+            st.write(f"**Precipitation:** {dest_weather['precipitation']:.1f} mm")
+            if dest_weather['snow'] > 0:
+                st.write(f"**Snow:** {dest_weather['snow']:.1f} cm")
+        else:
+            st.write("Weather forecast not available")
+
+
+def create_prediction_input(inputs, encoders, feature_columns, api_key, airports_df=None):
+    """Create input dataframe for prediction and return weather data"""
+    try:
+        date_obj = datetime.datetime.strptime(inputs['date_str'], "%Y-%m-%d")
+    except ValueError:
+        return None, "Invalid date format", None, None
+
+    # Create base input
+    input_dict = {
+        'YEAR': date_obj.year,
+        'MONTH': date_obj.month,
+        'DAY': date_obj.day,
+        'SCHEDULED_DEPARTURE': inputs['scheduled_departure'],
+        'SCHEDULED_ARRIVAL': inputs['scheduled_arrival'],
+        'ORIGIN_AIRPORT': inputs['origin'],
+        'DESTINATION_AIRPORT': inputs['dest'],
+        'AIRLINE': inputs['airline']
+    }
+
+    # Add weather data if available
+    today = datetime.date.today()
+    prediction_date = date_obj.date()
+    use_forecast = prediction_date >= today and api_key is not None
+
+    origin_weather = None
+    dest_weather = None
+
+    if use_forecast:
+        # Get weather forecasts
+        origin_weather, _ = get_weather_forecast(inputs['origin'], inputs['date_str'], api_key, airports_df)
+        dest_weather, _ = get_weather_forecast(inputs['dest'], inputs['date_str'], api_key, airports_df)
+
+        if origin_weather:
+            for key, value in origin_weather.items():
+                if key != 'weather_desc':  # Skip non-numeric
+                    input_dict[f'origin_{key}'] = value
+
+        if dest_weather:
+            for key, value in dest_weather.items():
+                if key != 'weather_desc':  # Skip non-numeric
+                    input_dict[f'dest_{key}'] = value
+
+    # Fill missing features with defaults
+    for col in feature_columns:
+        if col not in input_dict:
+            input_dict[col] = 0
+
+    # Create DataFrame
+    input_df = pd.DataFrame([input_dict])
+
+    # Encode categorical features
+    for col, encoder in encoders.items():
+        if col in input_df.columns:
+            value = str(input_df[col].iloc[0])
+            if value in encoder.classes_:
+                input_df[col] = encoder.transform([value])[0]
+            else:
+                input_df[col] = encoder.transform([encoder.classes_[0]])[0]
+
+    # Ensure all required features are present
+    input_df = input_df.reindex(columns=feature_columns, fill_value=0)
+
+    return input_df, "success", origin_weather, dest_weather
+
+
+def create_delay_visualization(prediction, airline, route):
+    """Create a visualization for the delay prediction"""
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number+delta",
+        value=prediction,
+        domain={'x': [0, 1], 'y': [0, 1]},
+        title={'text': f"{airline} {route}<br>Delay Prediction (minutes)"},
+        delta={'reference': 0},
+        gauge={
+            'axis': {'range': [None, 120]},
+            'bar': {'color': "darkblue"},
+            'steps': [
+                {'range': [0, 15], 'color': "lightgreen"},
+                {'range': [15, 30], 'color': "yellow"},
+                {'range': [30, 60], 'color': "orange"},
+                {'range': [60, 120], 'color': "red"}
+            ],
+            'threshold': {
+                'line': {'color': "red", 'width': 4},
+                'thickness': 0.75,
+                'value': 30
+            }
+        }
+    ))
+
+    fig.update_layout(
+        height=400,
+        font={'color': "darkblue", 'family': "Arial"}
+    )
+
+    return fig
+
 
 def main():
-    """Main application with robust error handling"""
-    try:
-        # Header
-        st.title("🛫 Flight Delay Predictor")
-        st.markdown("*AI-powered flight delay predictions*")
-        
-        # System information
-        with st.expander("🔧 System Status"):
-            log_memory_usage("at startup")
-            st.write(f"**Python:** {sys.version}")
-            st.write(f"**Working Dir:** {os.getcwd()}")
-            st.write(f"**Config:** {GITHUB_REPO} / {RELEASE_TAG}")
-        
-        # Initialize components
-        progress_container = st.container()
-        
-        with progress_container:
-            st.info("🚀 Initializing Flight Delay Predictor...")
-            
-            # Load model
-            model, encoders, feature_columns, created_date, version = load_model_safely()
-            
-            # Load data
-            df = load_data_progressively()
-            
-            # Force garbage collection
-            gc.collect()
-        
-        # Status dashboard
-        col1, col2, col3 = st.columns(3)
-        
+    # Header
+    st.markdown("""
+    <div class="main-header">
+        <h1> Flight Delay Predictor with Weather Analysis</h1>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    model, encoders, feature_columns, created_date, version = load_model_safe()
+    if model is None:
+        st.stop()
+
+    airports_df = load_airports_data_safe()
+
+    # Sidebar
+    with st.sidebar:
+        st.markdown("###  Model Information")
+        st.write(f"**Created:** {created_date}")
+        st.write(f"**Version:** {version}")
+        st.write(f"**Features:** {len(feature_columns) if feature_columns is not None else 'Unknown'}")
+
+        st.markdown("###  Weather Settings")
+        use_weather = st.checkbox("Use Real-time Weather Forecasts", value=True)
+        show_analysis = st.checkbox("Show Weather Delay Analysis", value=True)
+
+    # Main content
+    st.markdown("###  Flight Details")
+
+    # Flight input form
+    with st.form("flight_form"):
+        col1, col2 = st.columns(2)
+
         with col1:
-            if model:
-                st.success("✅ Model Ready")
-            else:
-                st.error("❌ Model Failed")
-        
+            origin = st.text_input("Origin Airport Code", value="JFK").upper()
+            airline = st.selectbox("Airline", options=["AA", "UA", "DL", "WN", "AS", "B6"])
+            departure_time = st.time_input("Scheduled Departure", value=datetime.time(14, 0))
+
         with col2:
-            if not df.empty:
-                st.success(f"✅ Data Ready")
-                st.caption(f"{len(df):,} rows")
-            else:
-                st.error("❌ No Data")
-        
-        with col3:
-            memory_mb = get_memory_usage()
-            if memory_mb > 0:
-                if memory_mb < MAX_MEMORY_GB * 1024 * 0.8:
-                    st.success("✅ Memory OK")
+            dest = st.text_input("Destination Airport Code", value="LAX").upper()
+            flight_date = st.date_input("Flight Date", value=datetime.date.today() + datetime.timedelta(days=1))
+            arrival_time = st.time_input("Scheduled Arrival", value=datetime.time(17, 0))
+
+        submitted = st.form_submit_button(" Predict Delay")
+
+    # Prediction results
+    if submitted:
+        # Validate inputs
+        if len(origin) != 3 or len(dest) != 3:
+            st.error("Airport codes must be exactly 3 letters!")
+            st.stop()
+
+        if origin == dest:
+            st.error("Origin and destination cannot be the same!")
+            st.stop()
+
+        # Prepare input data
+        inputs = {
+            'origin': origin,
+            'dest': dest,
+            'airline': airline,
+            'date_str': flight_date.strftime("%Y-%m-%d"),
+            'scheduled_departure': departure_time.hour * 100 + departure_time.minute,
+            'scheduled_arrival': arrival_time.hour * 100 + arrival_time.minute
+        }
+
+        # Show progress
+        with st.spinner("Processing prediction and analyzing weather..."):
+            api_key = 'KZG5KUC6LL62Z5LHDDZ3TTGVC' if use_weather else None
+            
+            input_df, status, origin_weather, dest_weather = create_prediction_input(
+                inputs, encoders, feature_columns, api_key, airports_df
+            )
+
+            if input_df is None:
+                st.error(f"Error creating prediction input: {status}")
+                st.stop()
+
+            # Make prediction
+            try:
+                prediction = model.predict(input_df)[0]
+
+                # Display results
+                st.markdown("###  Prediction Results")
+
+                # Create visualization
+                fig = create_delay_visualization(prediction, airline, f"{origin} → {dest}")
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Results summary
+                if prediction > 0:
+                    if prediction > 30:
+                        result_class = "warning-box"
+                        severity = " Major Delay"
+                    elif prediction > 15:
+                        result_class = "warning-box"
+                        severity = " Significant Delay"
+                    else:
+                        result_class = "info-box"
+                        severity = " Minor Delay"
+
+                    st.markdown(f"""
+                    <div class="{result_class}">
+                        <h4>{severity} Expected</h4>
+                        <p><strong>Flight {airline} {origin} → {dest}</strong> is predicted to arrive <strong>{prediction:.1f} minutes late</strong> on {flight_date.strftime('%B %d, %Y')}.</p>
+                    </div>
+                    """, unsafe_allow_html=True)
                 else:
-                    st.warning("⚠️ High Memory")
-                st.caption(f"{memory_mb:.0f} MB")
-            else:
-                st.info("ℹ️ Memory Status")
-                st.caption("Monitoring N/A")
-        
-        # Main interface
-        if model:
-            create_prediction_interface(model, encoders, feature_columns)
-        else:
-            st.error("❌ Cannot create interface without model")
-            st.info("Please check the model file and XGBoost compatibility")
-        
-        # Data info
-        if not df.empty:
-            with st.expander("📊 Dataset Information"):
-                st.write(f"**Rows:** {len(df):,}")
-                st.write(f"**Columns:** {len(df.columns)}")
-                if len(df.columns) > 0:
-                    st.write(f"**Sample columns:** {', '.join(df.columns[:5].tolist())}")
-        
-    except Exception as e:
-        st.error("🚨 Critical Error")
-        st.code(str(e))
-        st.code(traceback.format_exc())
-        
-        # Emergency info
-        st.info("🆘 Emergency mode activated. Check system requirements and file accessibility.")
+                    st.markdown(f"""
+                    <div class="success-box">
+                        <h4> On-Time or Early Arrival</h4>
+                        <p><strong>Flight {airline} {origin} → {dest}</strong> is predicted to arrive <strong>{abs(prediction):.1f} minutes early</strong> on {flight_date.strftime('%B %d, %Y')}.</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+                # Display weather analysis
+                if show_analysis and use_weather and (origin_weather or dest_weather):
+                    display_weather_analysis(origin_weather, dest_weather, origin, dest, prediction)
+                
+                # Display weather forecast
+                if use_weather and (origin_weather or dest_weather):
+                    display_weather_forecast(origin_weather, dest_weather, origin, dest, flight_date.strftime('%B %d, %Y'))
+                elif use_weather:
+                    st.markdown("""
+                    <div class="info-box">
+                        <h4> Weather Information</h4>
+                        <p>Weather forecasts are not available for the selected airports or date. The prediction uses historical weather patterns.</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+
+            except Exception as e:
+                st.error(f"Error making prediction: {str(e)}")
+                st.write("Please check that all required files are present and try again.")
+
+    # Footer
+    st.markdown("---")
+    st.markdown(" **Flight Delay Predictor with Weather Analysis** | Built with Streamlit & Machine Learning")
+
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        st.error(f"Application Error: {str(e)}")
+        st.write("Please check your files and dependencies.")
