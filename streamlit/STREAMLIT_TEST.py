@@ -23,8 +23,8 @@ st.set_page_config(
 )
 
 # Configuration for GitHub releases
-GITHUB_REPO = "your-username/your-repo-name"  # Replace with your repo
-RELEASE_TAG = "latest"  # or specific tag like "v1.0.0"
+GITHUB_REPO = "rajbariyaa/D-fliers"  # Replace with your repo
+RELEASE_TAG = "123" 
 DATA_FILENAME = "merged_flights_weather.csv"
 LOCAL_DATA_DIR = Path("data")
 LOCAL_DATA_FILE = LOCAL_DATA_DIR / DATA_FILENAME
