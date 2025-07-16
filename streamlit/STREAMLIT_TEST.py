@@ -230,8 +230,7 @@ def load_historical_data_safely():
                 
                 # If sample loads successfully, try loading more
                 # For demo purposes, load only first 10,000 rows to avoid memory issues
-                df = pd.read_csv(LOCAL_DATA_FILE, nrows=10000)
-                st.success(f"✅ Loaded cached data sample: {len(df):,} rows")
+                df = pd.read_csv(LOCAL_DATA_FILE)
                 return df
             except Exception as e:
                 st.warning(f"Cached file appears corrupted: {str(e)}")
@@ -253,9 +252,7 @@ def load_historical_data_safely():
         if success:
             try:
                 # Load only a sample to avoid memory issues
-                df = pd.read_csv(LOCAL_DATA_FILE, nrows=10000)
-                st.success(f"✅ Downloaded and loaded data sample: {len(df):,} rows")
-                st.info("Loading only 10,000 rows for demo to avoid memory limits")
+                df = pd.read_csv(LOCAL_DATA_FILE)
                 return df
             except Exception as e:
                 st.error(f"❌ Error reading downloaded file: {str(e)}")
