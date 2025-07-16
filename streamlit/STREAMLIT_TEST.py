@@ -7,14 +7,14 @@ import requests
 import warnings
 import os
 import sys
+import gc
 from pathlib import Path
 import time
 import traceback
+import psutil
 
-# Suppress XGBoost warnings
+# Suppress warnings
 warnings.filterwarnings('ignore')
-import warnings
-warnings.filterwarnings('ignore', category=UserWarning, module='xgboost')
 
 # Page configuration
 st.set_page_config(
@@ -31,35 +31,67 @@ DATA_FILENAME = "merged_flights_weather.csv"
 LOCAL_DATA_DIR = Path("data")
 LOCAL_DATA_FILE = LOCAL_DATA_DIR / DATA_FILENAME
 
-# Create data directory if it doesn't exist
+# Memory management settings
+MAX_MEMORY_GB = 1.5  # Conservative limit for Streamlit Cloud
+CHUNK_SIZE = 50000   # Process in chunks if needed
+
+def get_memory_usage():
+    """Get current memory usage"""
+    try:
+        process = psutil.Process(os.getpid())
+        memory_mb = process.memory_info().rss / 1024 / 1024
+        return memory_mb
+    except:
+        return 0
+
+def log_memory_usage(message=""):
+    """Log current memory usage"""
+    memory_mb = get_memory_usage()
+    if memory_mb > 0:
+        st.write(f"🧠 Memory: {memory_mb:.1f} MB {message}")
+    return memory_mb
+
+# Create data directory
 try:
     LOCAL_DATA_DIR.mkdir(exist_ok=True)
 except Exception as e:
     st.error(f"Could not create data directory: {e}")
 
-
 def download_with_direct_url(repo, tag, filename, local_path):
-    """
-    Download using direct GitHub URL instead of API (avoids rate limits)
-    """
+    """Download using direct GitHub URL"""
     try:
         direct_url = f"https://github.com/{repo}/releases/download/{tag}/{filename}"
-        st.info(f"Downloading {filename} from direct URL...")
+        st.info(f"📥 Downloading from: {direct_url}")
         
-        response = requests.get(direct_url, stream=True, timeout=120)
+        # Check if URL is accessible
+        head_response = requests.head(direct_url, timeout=10)
+        if head_response.status_code == 404:
+            st.error(f"❌ File not found at {direct_url}")
+            st.info("Please verify:")
+            st.info(f"1. Release '{tag}' exists at https://github.com/{repo}/releases")
+            st.info(f"2. File '{filename}' is uploaded to that release")
+            st.info("3. Release is published (not draft)")
+            return False, "File not found"
         
-        if response.status_code == 404:
-            return False, f"File not found at {direct_url}"
-        
+        response = requests.get(direct_url, stream=True, timeout=300)
         response.raise_for_status()
         
-        file_size = response.headers.get('content-length')
+        # Get file size
+        file_size = head_response.headers.get('content-length') or response.headers.get('content-length')
         if file_size:
             file_size = int(file_size)
-            st.info(f"File size: {file_size / (1024*1024):.1f} MB")
+            file_size_mb = file_size / (1024 * 1024)
+            st.info(f"📊 File size: {file_size_mb:.1f} MB")
+            
+            # Check if we have enough space
+            available_memory = (MAX_MEMORY_GB * 1024) - get_memory_usage()
+            if file_size_mb > available_memory:
+                st.warning(f"⚠️ File size ({file_size_mb:.1f} MB) may exceed available memory ({available_memory:.1f} MB)")
         
+        # Download with progress
         downloaded_size = 0
         progress_bar = st.progress(0)
+        status_text = st.empty()
         
         with open(local_path, 'wb') as f:
             for chunk in response.iter_content(chunk_size=8192):
@@ -70,26 +102,22 @@ def download_with_direct_url(repo, tag, filename, local_path):
                     if file_size:
                         progress = min(downloaded_size / file_size, 1.0)
                         progress_bar.progress(progress)
+                        status_text.text(f"Downloaded: {downloaded_size / (1024*1024):.1f} MB")
         
         progress_bar.progress(1.0)
+        status_text.text("✅ Download completed!")
         return True, "Download successful"
         
+    except requests.exceptions.Timeout:
+        return False, "Download timeout - file may be too large"
+    except requests.exceptions.RequestException as e:
+        return False, f"Network error: {str(e)}"
     except Exception as e:
         return False, f"Error: {str(e)}"
 
-
-def load_model_with_xgboost_fix():
-    """Load model with XGBoost compatibility fixes"""
-    
-    # Try to import XGBoost with version checking
-    try:
-        import xgboost as xgb
-        xgb_version = xgb.__version__
-        st.info(f"XGBoost version: {xgb_version}")
-    except ImportError:
-        st.error("XGBoost not installed. Installing...")
-        os.system("pip install xgboost")
-        import xgboost as xgb
+def load_model_safely():
+    """Load model with comprehensive error handling"""
+    st.info("🔄 Loading model...")
     
     model_paths = [
         'models/test02.pkl',
@@ -100,189 +128,203 @@ def load_model_with_xgboost_fix():
     
     for path in model_paths:
         if os.path.exists(path):
-            st.info(f"Found model at: {path}")
-            
-            # Try multiple loading strategies
-            model_package = None
-            
-            # Strategy 1: Try loading with current pickle
+            st.info(f"📂 Found model at: {path}")
             try:
                 with open(path, 'rb') as f:
                     model_package = pickle.load(f)
-                st.success("✅ Model loaded successfully with current pickle")
                 
-            except Exception as e:
-                st.warning(f"Current pickle failed: {str(e)}")
-                
-                # Strategy 2: Try loading with protocol 4
-                try:
-                    with open(path, 'rb') as f:
-                        model_package = pickle.load(f)
-                    st.success("✅ Model loaded with protocol 4")
-                except Exception as e2:
-                    st.warning(f"Protocol 4 failed: {str(e2)}")
-                    
-                    # Strategy 3: Create a fallback model
-                    st.error("Creating fallback model due to XGBoost compatibility issues")
-                    return create_fallback_model()
-            
-            if model_package:
-                # Validate the model package
                 model = model_package.get('model')
                 encoders = model_package.get('encoders', {})
                 feature_columns = model_package.get('feature_columns', [])
                 
-                # Test if XGBoost model works
-                if model is not None:
-                    try:
-                        # Try a small prediction to test compatibility
-                        if hasattr(model, 'predict'):
-                            # Create dummy input for testing
-                            if len(feature_columns) > 0:
-                                dummy_input = pd.DataFrame([[0] * len(feature_columns)], columns=feature_columns)
-                                _ = model.predict(dummy_input)
-                                st.success("✅ Model prediction test passed")
-                            else:
-                                st.warning("No feature columns found, using basic model")
-                    except Exception as e:
-                        st.error(f"Model prediction test failed: {str(e)}")
-                        st.error("This is likely due to XGBoost version incompatibility")
-                        return create_fallback_model()
-                
-                return (
-                    model,
-                    encoders,
-                    feature_columns,
-                    model_package.get('created_date', 'Unknown'),
-                    model_package.get('version', 'Unknown')
-                )
+                # Test model
+                if model and hasattr(model, 'predict'):
+                    st.success("✅ Model loaded and validated")
+                    return model, encoders, feature_columns, 'Loaded', '1.0'
+                else:
+                    st.error("❌ Model object is invalid")
+                    
+            except Exception as e:
+                st.error(f"❌ Model loading failed: {str(e)}")
+                if "xgboost" in str(e).lower():
+                    st.error("🔧 XGBoost version compatibility issue detected")
+                    st.info("💡 Try updating the model with current XGBoost version")
     
-    st.error("Model file not found in any expected location")
-    return create_fallback_model()
+    st.error("❌ No valid model found")
+    return None, {}, [], 'None', 'None'
 
-
-def create_fallback_model():
-    """Create a simple fallback model when XGBoost model fails"""
-    st.warning("🔄 Creating fallback prediction model...")
+def load_data_progressively():
+    """Load data with memory management and progressive loading"""
+    st.info("🔄 Loading historical data...")
     
-    class FallbackModel:
-        def __init__(self):
-            self.name = "Simple Rule-Based Model"
-        
-        def predict(self, X):
-            """Simple rule-based prediction"""
-            predictions = []
-            for _, row in X.iterrows():
-                # Simple rules for delay prediction
-                base_delay = 10  # Base delay in minutes
-                
-                # Add delay based on time of day (if available)
-                if 'SCHEDULED_DEPARTURE' in row:
-                    hour = int(row['SCHEDULED_DEPARTURE']) // 100
-                    if 6 <= hour <= 9:  # Morning rush
-                        base_delay += 15
-                    elif 17 <= hour <= 20:  # Evening rush
-                        base_delay += 20
-                    elif hour >= 22 or hour <= 5:  # Late night/early morning
-                        base_delay -= 5
-                
-                # Add some randomness based on route (if available)
-                if 'ORIGIN_AIRPORT' in row and 'DESTINATION_AIRPORT' in row:
-                    route_hash = hash(str(row['ORIGIN_AIRPORT']) + str(row['DESTINATION_AIRPORT']))
-                    base_delay += (route_hash % 30) - 15  # Random adjustment
-                
-                predictions.append(max(0, base_delay))  # Don't predict negative delays
-            
-            return np.array(predictions)
-    
-    fallback_model = FallbackModel()
-    
-    # Create basic encoders and feature columns
-    basic_encoders = {
-        'ORIGIN_AIRPORT': type('MockEncoder', (), {
-            'classes_': ['JFK', 'LAX', 'ORD'], 
-            'transform': lambda self, x: [0] * len(x)
-        })(),
-        'DESTINATION_AIRPORT': type('MockEncoder', (), {
-            'classes_': ['JFK', 'LAX', 'ORD'], 
-            'transform': lambda self, x: [0] * len(x)
-        })(),
-        'AIRLINE': type('MockEncoder', (), {
-            'classes_': ['AA', 'UA', 'DL'], 
-            'transform': lambda self, x: [0] * len(x)
-        })()
-    }
-    
-    basic_features = ['SCHEDULED_DEPARTURE', 'SCHEDULED_ARRIVAL', 'ORIGIN_AIRPORT', 'DESTINATION_AIRPORT', 'AIRLINE']
-    
-    return fallback_model, basic_encoders, basic_features, 'Fallback', '1.0'
-
-
-def load_historical_data_safely():
-    """Load historical data with error handling"""
     try:
         # Check if file exists locally
         if LOCAL_DATA_FILE.exists():
-            try:
-                st.info("Checking cached data...")
-                # Try to load just a small sample first to verify file integrity
-                df_test = pd.read_csv(LOCAL_DATA_FILE, nrows=5)
-                
-                # If sample loads successfully, load the full dataset
-                st.info("Loading full dataset...")
-                df = pd.read_csv(LOCAL_DATA_FILE)
-                st.success(f"✅ Loaded cached data: {len(df):,} rows")
-                return df
-            except Exception as e:
-                st.warning(f"Cached file appears corrupted: {str(e)}")
-                try:
-                    LOCAL_DATA_FILE.unlink()
-                except:
-                    pass
-        
-        # Download from GitHub
-        st.info(f"📥 Downloading {DATA_FILENAME} from GitHub releases...")
-        
-        success, message = download_with_direct_url(
-            GITHUB_REPO, 
-            RELEASE_TAG, 
-            DATA_FILENAME, 
-            LOCAL_DATA_FILE
-        )
-        
-        if success:
-            try:
-                # Load the full dataset
-                st.info("Loading full dataset...")
-                df = pd.read_csv(LOCAL_DATA_FILE)
-                st.success(f"✅ Downloaded and loaded full data: {len(df):,} rows")
-                return df
-            except Exception as e:
-                st.error(f"❌ Error reading downloaded file: {str(e)}")
-        else:
-            st.error(f"❌ Failed to download data: {message}")
+            file_size_mb = LOCAL_DATA_FILE.stat().st_size / (1024 * 1024)
+            st.info(f"📊 Local file size: {file_size_mb:.1f} MB")
             
+            # Memory check
+            current_memory = get_memory_usage()
+            estimated_memory_needed = file_size_mb * 2.5  # CSV typically needs 2-3x memory
+            available_memory = (MAX_MEMORY_GB * 1024) - current_memory
+            
+            st.info(f"🧠 Current memory: {current_memory:.1f} MB")
+            st.info(f"🧠 Estimated needed: {estimated_memory_needed:.1f} MB")
+            st.info(f"🧠 Available: {available_memory:.1f} MB")
+            
+            # Decide loading strategy
+            if estimated_memory_needed > available_memory:
+                st.warning("⚠️ File may be too large for available memory. Using chunked loading...")
+                return load_data_in_chunks()
+            else:
+                st.info("✅ Sufficient memory available. Loading full dataset...")
+                return load_full_dataset()
+        else:
+            # Download first
+            st.info("📥 File not found locally. Downloading...")
+            success, message = download_with_direct_url(
+                GITHUB_REPO, RELEASE_TAG, DATA_FILENAME, LOCAL_DATA_FILE
+            )
+            
+            if success:
+                return load_data_progressively()  # Recursive call after download
+            else:
+                st.error(f"❌ Download failed: {message}")
+                return pd.DataFrame()
+    
+    except Exception as e:
+        st.error(f"❌ Error in progressive loading: {str(e)}")
+        st.code(traceback.format_exc())
         return pd.DataFrame()
+
+def load_full_dataset():
+    """Load the complete dataset"""
+    try:
+        st.info("📖 Reading full dataset...")
+        log_memory_usage("before loading")
+        
+        # Load with optimized dtypes
+        df = pd.read_csv(LOCAL_DATA_FILE, low_memory=False)
+        
+        log_memory_usage("after loading")
+        
+        # Optimize memory usage
+        st.info("🔧 Optimizing memory usage...")
+        df = optimize_dataframe_memory(df)
+        
+        log_memory_usage("after optimization")
+        
+        st.success(f"✅ Loaded full dataset: {len(df):,} rows, {len(df.columns)} columns")
+        return df
+        
+    except MemoryError:
+        st.error("❌ Out of memory loading full dataset. Switching to chunked loading...")
+        return load_data_in_chunks()
+    except Exception as e:
+        st.error(f"❌ Error loading full dataset: {str(e)}")
+        return load_data_in_chunks()
+
+def load_data_in_chunks():
+    """Load data in chunks to manage memory"""
+    try:
+        st.info("📚 Loading data in chunks...")
+        
+        # Get total rows first
+        total_rows = sum(1 for _ in open(LOCAL_DATA_FILE)) - 1  # -1 for header
+        st.info(f"📊 Total rows: {total_rows:,}")
+        
+        # Determine sample size based on available memory
+        current_memory = get_memory_usage()
+        available_memory = (MAX_MEMORY_GB * 1024) - current_memory
+        
+        # Conservative estimate: 1 MB per 1000 rows
+        max_rows = min(int(available_memory * 1000), total_rows)
+        
+        if max_rows < 10000:
+            max_rows = 10000  # Minimum useful sample
+            
+        st.info(f"📊 Loading sample of {max_rows:,} rows due to memory constraints")
+        
+        # Load random sample
+        skip_rows = sorted(np.random.choice(range(1, total_rows + 1), 
+                                          size=total_rows - max_rows, 
+                                          replace=False))
+        
+        df = pd.read_csv(LOCAL_DATA_FILE, skiprows=skip_rows, low_memory=False)
+        df = optimize_dataframe_memory(df)
+        
+        st.success(f"✅ Loaded sample: {len(df):,} rows")
+        st.info(f"📈 This represents {len(df)/total_rows*100:.1f}% of the full dataset")
+        
+        return df
         
     except Exception as e:
-        st.error(f"Unexpected error: {str(e)}")
+        st.error(f"❌ Chunked loading failed: {str(e)}")
+        st.info("🔄 Falling back to minimal dataset...")
+        return load_minimal_dataset()
+
+def load_minimal_dataset():
+    """Load minimal dataset as last resort"""
+    try:
+        st.info("📝 Loading minimal dataset (first 5000 rows)...")
+        df = pd.read_csv(LOCAL_DATA_FILE, nrows=5000, low_memory=False)
+        df = optimize_dataframe_memory(df)
+        st.warning(f"⚠️ Using minimal dataset: {len(df):,} rows")
+        return df
+    except Exception as e:
+        st.error(f"❌ Even minimal loading failed: {str(e)}")
         return pd.DataFrame()
 
+def optimize_dataframe_memory(df):
+    """Optimize DataFrame memory usage"""
+    try:
+        initial_memory = df.memory_usage(deep=True).sum() / 1024 / 1024
+        
+        for col in df.columns:
+            col_type = df[col].dtype
+            
+            if col_type != 'object':
+                c_min = df[col].min()
+                c_max = df[col].max()
+                
+                if str(col_type)[:3] == 'int':
+                    if c_min > np.iinfo(np.int8).min and c_max < np.iinfo(np.int8).max:
+                        df[col] = df[col].astype(np.int8)
+                    elif c_min > np.iinfo(np.int16).min and c_max < np.iinfo(np.int16).max:
+                        df[col] = df[col].astype(np.int16)
+                    elif c_min > np.iinfo(np.int32).min and c_max < np.iinfo(np.int32).max:
+                        df[col] = df[col].astype(np.int32)
+                
+                elif str(col_type)[:5] == 'float':
+                    if c_min > np.finfo(np.float32).min and c_max < np.finfo(np.float32).max:
+                        df[col] = df[col].astype(np.float32)
+        
+        final_memory = df.memory_usage(deep=True).sum() / 1024 / 1024
+        reduction = (initial_memory - final_memory) / initial_memory * 100
+        
+        if reduction > 0:
+            st.info(f"🎯 Memory optimized: {reduction:.1f}% reduction ({initial_memory:.1f}→{final_memory:.1f} MB)")
+        
+        return df
+        
+    except Exception as e:
+        st.warning(f"Memory optimization failed: {str(e)}")
+        return df
 
-def create_simple_prediction_interface(model, encoders, feature_columns):
-    """Create prediction interface"""
-    st.markdown("### Flight Delay Prediction")
+def create_prediction_interface(model, encoders, feature_columns):
+    """Create the prediction interface"""
+    st.markdown("### ✈️ Flight Delay Prediction")
     
     with st.form("prediction_form"):
         col1, col2 = st.columns(2)
         
         with col1:
-            origin = st.text_input("Origin Airport (3-letter code)", value="JFK", max_chars=3).upper()
+            origin = st.text_input("Origin Airport", value="JFK", max_chars=3).upper()
             airline = st.selectbox("Airline", ["AA", "UA", "DL", "WN", "AS", "B6"])
             departure_time = st.time_input("Departure Time", value=datetime.time(14, 0))
         
         with col2:
-            destination = st.text_input("Destination Airport (3-letter code)", value="LAX", max_chars=3).upper()
+            destination = st.text_input("Destination Airport", value="LAX", max_chars=3).upper()
             flight_date = st.date_input("Flight Date", value=datetime.date.today() + datetime.timedelta(days=1))
             arrival_time = st.time_input("Arrival Time", value=datetime.time(17, 0))
         
@@ -293,12 +335,8 @@ def create_simple_prediction_interface(model, encoders, feature_columns):
                 st.error("Airport codes must be exactly 3 letters!")
                 return
             
-            if origin == destination:
-                st.error("Origin and destination must be different!")
-                return
-            
             try:
-                # Create input for prediction
+                # Create prediction input
                 input_data = {
                     'SCHEDULED_DEPARTURE': departure_time.hour * 100 + departure_time.minute,
                     'SCHEDULED_ARRIVAL': arrival_time.hour * 100 + arrival_time.minute,
@@ -307,127 +345,106 @@ def create_simple_prediction_interface(model, encoders, feature_columns):
                     'AIRLINE': airline
                 }
                 
-                # Add missing features with default values
                 input_df = pd.DataFrame([input_data])
                 
-                # Handle encoding
-                for col, encoder in encoders.items():
-                    if col in input_df.columns:
-                        try:
-                            value = str(input_df[col].iloc[0])
-                            if hasattr(encoder, 'classes_') and value in encoder.classes_:
-                                input_df[col] = encoder.transform([value])[0]
-                            else:
-                                input_df[col] = 0  # Default encoding
-                        except:
-                            input_df[col] = 0
-                
-                # Ensure all required features are present
+                # Handle missing features
                 for col in feature_columns:
                     if col not in input_df.columns:
                         input_df[col] = 0
                 
-                # Reorder columns to match training
                 input_df = input_df.reindex(columns=feature_columns, fill_value=0)
                 
                 # Make prediction
                 prediction = model.predict(input_df)[0]
                 
-                # Display result
+                # Display result with better formatting
                 if prediction <= 0:
-                    st.success(f"🎉 Flight is predicted to arrive **ON TIME** or **{abs(prediction):.0f} minutes EARLY**!")
+                    st.success(f"🎉 **ON TIME** - Arrives {abs(prediction):.0f} min early!")
                 elif prediction <= 15:
-                    st.info(f"✈️ Flight is predicted to have a **MINOR DELAY** of **{prediction:.0f} minutes**")
+                    st.info(f"✈️ **MINOR DELAY** - {prediction:.0f} minutes late")
                 elif prediction <= 30:
-                    st.warning(f"⚠️ Flight is predicted to have a **MODERATE DELAY** of **{prediction:.0f} minutes**")
+                    st.warning(f"⚠️ **MODERATE DELAY** - {prediction:.0f} minutes late")
                 else:
-                    st.error(f"🚨 Flight is predicted to have a **MAJOR DELAY** of **{prediction:.0f} minutes**")
-                
-                # Additional info
-                st.markdown("---")
-                st.markdown("### Flight Summary")
-                st.write(f"**Route:** {origin} ✈️ {destination}")
-                st.write(f"**Airline:** {airline}")
-                st.write(f"**Date:** {flight_date.strftime('%B %d, %Y')}")
-                st.write(f"**Departure:** {departure_time.strftime('%I:%M %p')}")
-                st.write(f"**Arrival:** {arrival_time.strftime('%I:%M %p')}")
+                    st.error(f"🚨 **MAJOR DELAY** - {prediction:.0f} minutes late")
                 
             except Exception as e:
                 st.error(f"Prediction failed: {str(e)}")
-                st.code(traceback.format_exc())
-
 
 def main():
-    """Main application with comprehensive error handling"""
+    """Main application with robust error handling"""
     try:
         # Header
-        st.markdown("# 🛫 Flight Delay Predictor")
-        st.markdown("*Predict flight delays using machine learning*")
+        st.title("🛫 Flight Delay Predictor")
+        st.markdown("*AI-powered flight delay predictions*")
         
-        # Show system info
-        with st.expander("🔧 System Information"):
-            try:
-                import xgboost as xgb
-                st.write(f"**XGBoost Version:** {xgb.__version__}")
-            except:
-                st.write("**XGBoost:** Not available")
+        # System information
+        with st.expander("🔧 System Status"):
+            log_memory_usage("at startup")
+            st.write(f"**Python:** {sys.version}")
+            st.write(f"**Working Dir:** {os.getcwd()}")
+            st.write(f"**Config:** {GITHUB_REPO} / {RELEASE_TAG}")
+        
+        # Initialize components
+        progress_container = st.container()
+        
+        with progress_container:
+            st.info("🚀 Initializing Flight Delay Predictor...")
             
-            st.write(f"**Python Version:** {sys.version}")
-            st.write(f"**Working Directory:** {os.getcwd()}")
-            st.write(f"**Repository:** {GITHUB_REPO}")
-            st.write(f"**Release Tag:** {RELEASE_TAG}")
-        
-        # Load components
-        with st.spinner("Loading model and data..."):
-            # Load model with XGBoost compatibility fixes
-            model, encoders, feature_columns, created_date, version = load_model_with_xgboost_fix()
+            # Load model
+            model, encoders, feature_columns, created_date, version = load_model_safely()
             
-            # Load data (sample only to avoid memory issues)
-            df = load_historical_data_safely()
+            # Load data
+            df = load_data_progressively()
+            
+            # Force garbage collection
+            gc.collect()
         
-        # Show status
+        # Status dashboard
         col1, col2, col3 = st.columns(3)
         
         with col1:
             if model:
                 st.success("✅ Model Ready")
-                st.write(f"Version: {version}")
             else:
                 st.error("❌ Model Failed")
         
         with col2:
             if not df.empty:
-                st.success(f"✅ Data Loaded")
-                st.write(f"Rows: {len(df):,}")
+                st.success(f"✅ Data Ready")
+                st.caption(f"{len(df):,} rows")
             else:
-                st.warning("⚠️ Limited Mode")
+                st.error("❌ No Data")
         
         with col3:
-            if encoders:
-                st.success("✅ Encoders Ready")
-                st.write(f"Count: {len(encoders)}")
+            memory_mb = get_memory_usage()
+            if memory_mb < MAX_MEMORY_GB * 1024 * 0.8:
+                st.success("✅ Memory OK")
             else:
-                st.warning("⚠️ Basic Mode")
+                st.warning("⚠️ High Memory")
+            st.caption(f"{memory_mb:.0f} MB")
         
-        # Main prediction interface
+        # Main interface
         if model:
-            create_simple_prediction_interface(model, encoders, feature_columns)
+            create_prediction_interface(model, encoders, feature_columns)
         else:
-            st.error("Cannot create prediction interface without a model")
+            st.error("❌ Cannot create interface without model")
+            st.info("Please check the model file and XGBoost compatibility")
         
-        # Footer
-        st.markdown("---")
-        st.markdown("*Built with Streamlit & Machine Learning*")
+        # Data info
+        if not df.empty:
+            with st.expander("📊 Dataset Information"):
+                st.write(f"**Rows:** {len(df):,}")
+                st.write(f"**Columns:** {len(df.columns)}")
+                if len(df.columns) > 0:
+                    st.write(f"**Sample columns:** {', '.join(df.columns[:5].tolist())}")
         
     except Exception as e:
-        st.error("🚨 Critical Application Error")
+        st.error("🚨 Critical Error")
         st.code(str(e))
         st.code(traceback.format_exc())
         
-        # Emergency interface
-        st.markdown("### 🆘 Emergency Mode")
-        st.info("The application encountered a critical error but is still running in emergency mode.")
-
+        # Emergency info
+        st.info("🆘 Emergency mode activated. Check system requirements and file accessibility.")
 
 if __name__ == "__main__":
     main()
