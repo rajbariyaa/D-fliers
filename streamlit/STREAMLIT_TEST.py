@@ -556,7 +556,7 @@ def display_available_airports(airports_df):
                 airports_df['AIRPORT'].str.contains(search_term, case=False, na=False)
             ]
         else:
-            filtered_airports = airports_df.head(20)  # Show first 20 by default
+            filtered_airports = airports_df.head() 
         
         st.sidebar.write(f"Showing {len(filtered_airports)} airports:")
         for _, airport in filtered_airports.iterrows():
