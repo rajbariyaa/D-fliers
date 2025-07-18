@@ -563,7 +563,7 @@ def display_available_airports(airports_df):
             st.sidebar.write(f"**{airport['IATA_CODE']}** - {airport.get('AIRPORT', 'Unknown Airport')}")
         
         if not search_term:
-            st.sidebar.write(f"... and {len(airports_df) - 20} more airports")
+            st.sidebar.write(f"... and {len(airports_df) - 5} more airports")
             st.sidebar.write("Use the search box to find specific airports")
 
 
