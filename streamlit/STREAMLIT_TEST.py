@@ -86,6 +86,14 @@ st.markdown("""
         margin: 10px 0;
         border-radius: 5px;
     }
+    
+    .error-box {
+        background-color: #f8d7da;
+        border-left: 4px solid #dc3545;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -104,10 +112,10 @@ def load_model_safe():
             model_package.get('version', 'Unknown')
         )
     except FileNotFoundError:
-        st.error(" Model file 'test02.pkl' not found. Please ensure the model file is in the correct directory.")
+        st.error("❌ Model file 'test02.pkl' not found. Please ensure the model file is in the correct directory.")
         return None, None, None, None, None
     except Exception as e:
-        st.error(f" Error loading model: {str(e)}")
+        st.error(f"❌ Error loading model: {str(e)}")
         return None, None, None, None, None
 
 
@@ -115,41 +123,54 @@ def load_airports_data_safe():
     """Safely load airports data"""
     try:
         airports_df = pd.read_csv("streamlit/airports.csv")
+        if airports_df.empty:
+            st.error("❌ Airports data file is empty. Please check the file content.")
+            return None
         return airports_df
     except FileNotFoundError:
-        st.warning(" Airports data file 'airports.csv' not found. Weather forecasts may be limited.")
-        return pd.DataFrame()
+        st.error("❌ Airports data file 'airports.csv' not found. This file is required for airport validation.")
+        return None
     except Exception as e:
-        st.warning(f" Error loading airports data: {str(e)}")
-        return pd.DataFrame()
+        st.error(f"❌ Error loading airports data: {str(e)}")
+        return None
 
 
-def get_weather_forecast(iata_code, date_str, api_key, airports_df=None):
+def validate_airports(origin_code, dest_code, airports_df):
+    """Validate that both airports exist in the airports database"""
+    if airports_df is None:
+        raise ValueError("Airports database not loaded. Cannot validate airports.")
+    
+    missing_airports = []
+    
+    if origin_code not in airports_df['IATA_CODE'].values:
+        missing_airports.append(f"Origin airport '{origin_code}'")
+    
+    if dest_code not in airports_df['IATA_CODE'].values:
+        missing_airports.append(f"Destination airport '{dest_code}'")
+    
+    if missing_airports:
+        error_msg = f"The following airports are not found in the database: {', '.join(missing_airports)}"
+        available_airports = sorted(airports_df['IATA_CODE'].unique())
+        raise ValueError(f"{error_msg}\n\nAvailable airports: {', '.join(available_airports[:20])}{'...' if len(available_airports) > 20 else ''}")
+    
+    return True
+
+
+def get_weather_forecast(iata_code, date_str, api_key, airports_df):
     """Get weather forecast from Visual Crossing API"""
     if not api_key:
         return None, "no_api_key"
 
     try:
-        # Get coordinates for the airport
-        if airports_df is not None and not airports_df.empty:
-            if iata_code in airports_df['IATA_CODE'].values:
-                airport_row = airports_df[airports_df['IATA_CODE'] == iata_code].iloc[0]
-                lat, lon = airport_row['LATITUDE'], airport_row['LONGITUDE']
-            else:
-                return None, "unknown_airport"
-        else:
-            # Fallback coordinates for common airports
-            fallback_coords = {
-                'JFK': (40.6413, -73.7781),
-                'LAX': (33.9425, -118.4081),
-                'ORD': (41.9742, -87.9073),
-                'DFW': (32.8975, -97.0380),
-                'DEN': (39.8561, -104.6737)
-            }
-            if iata_code in fallback_coords:
-                lat, lon = fallback_coords[iata_code]
-            else:
-                return None, "unknown_airport"
+        # Get coordinates for the airport from the database
+        if airports_df is None or airports_df.empty:
+            return None, "no_airports_data"
+        
+        if iata_code not in airports_df['IATA_CODE'].values:
+            return None, "unknown_airport"
+        
+        airport_row = airports_df[airports_df['IATA_CODE'] == iata_code].iloc[0]
+        lat, lon = airport_row['LATITUDE'], airport_row['LONGITUDE']
 
         # Visual Crossing API call
         url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{lat},{lon}/{date_str}"
@@ -317,7 +338,7 @@ def analyze_weather_impact(weather_data, location_name):
 
 def display_weather_analysis(origin_weather, dest_weather, origin_code, dest_code, prediction):
     """Display comprehensive weather analysis"""
-    st.markdown("###  Weather Delay Analysis")
+    st.markdown("### 🌤️ Weather Delay Analysis")
     
     # Analyze weather impact for both locations
     origin_factors, origin_risk = analyze_weather_impact(origin_weather, f"Origin ({origin_code})")
@@ -361,7 +382,7 @@ def display_weather_analysis(origin_weather, dest_weather, origin_code, dest_cod
                     </div>
                     """, unsafe_allow_html=True)
             else:
-                st.markdown(" No significant weather issues detected")
+                st.markdown("✅ No significant weather issues detected")
         
         with col2:
             st.markdown(f"**🛬 {dest_code} Weather Issues**")
@@ -376,11 +397,11 @@ def display_weather_analysis(origin_weather, dest_weather, origin_code, dest_cod
                     </div>
                     """, unsafe_allow_html=True)
             else:
-                st.markdown(" No significant weather issues detected")
+                st.markdown("✅ No significant weather issues detected")
     else:
         st.markdown("""
         <div class="success-box">
-            <h4> Favorable Weather Conditions</h4>
+            <h4>✅ Favorable Weather Conditions</h4>
             <p>No significant weather factors identified that would cause delays. Weather conditions appear favorable for on-time operations.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -388,7 +409,7 @@ def display_weather_analysis(origin_weather, dest_weather, origin_code, dest_cod
 
 def display_weather_forecast(origin_weather, dest_weather, origin_code, dest_code, flight_date):
     """Display weather forecast information"""
-    st.markdown("###  Weather Forecast")
+    st.markdown("### 🌤️ Weather Forecast")
     
     col1, col2 = st.columns(2)
     
@@ -423,7 +444,7 @@ def display_weather_forecast(origin_weather, dest_weather, origin_code, dest_cod
             st.write("Weather forecast not available")
 
 
-def create_prediction_input(inputs, encoders, feature_columns, api_key, airports_df=None):
+def create_prediction_input(inputs, encoders, feature_columns, api_key, airports_df):
     """Create input dataframe for prediction and return weather data"""
     try:
         date_obj = datetime.datetime.strptime(inputs['date_str'], "%Y-%m-%d")
@@ -450,7 +471,7 @@ def create_prediction_input(inputs, encoders, feature_columns, api_key, airports
     origin_weather = None
     dest_weather = None
 
-    if use_forecast:
+    if use_forecast and airports_df is not None:
         # Get weather forecasts
         origin_weather, _ = get_weather_forecast(inputs['origin'], inputs['date_str'], api_key, airports_df)
         dest_weather, _ = get_weather_forecast(inputs['dest'], inputs['date_str'], api_key, airports_df)
@@ -521,33 +542,64 @@ def create_delay_visualization(prediction, airline, route):
     return fig
 
 
+def display_available_airports(airports_df):
+    """Display available airports in the sidebar"""
+    if airports_df is not None and not airports_df.empty:
+        st.sidebar.markdown("### 🏢 Available Airports")
+        
+        # Search functionality
+        search_term = st.sidebar.text_input("Search airports:", placeholder="Enter airport code or name")
+        
+        if search_term:
+            filtered_airports = airports_df[
+                airports_df['IATA_CODE'].str.contains(search_term.upper(), na=False) |
+                airports_df['AIRPORT'].str.contains(search_term, case=False, na=False)
+            ]
+        else:
+            filtered_airports = airports_df.head(20)  # Show first 20 by default
+        
+        st.sidebar.write(f"Showing {len(filtered_airports)} airports:")
+        for _, airport in filtered_airports.iterrows():
+            st.sidebar.write(f"**{airport['IATA_CODE']}** - {airport.get('AIRPORT', 'Unknown Airport')}")
+        
+        if not search_term:
+            st.sidebar.write(f"... and {len(airports_df) - 20} more airports")
+            st.sidebar.write("💡 Use the search box to find specific airports")
+
+
 def main():
     # Header
     st.markdown("""
     <div class="main-header">
-        <h1> Flight Delay Predictor with Weather Analysis</h1>
+        <h1>✈️ Flight Delay Predictor with Weather Analysis</h1>
     </div>
     """, unsafe_allow_html=True)
     
+    # Load model and airports data
     model, encoders, feature_columns, created_date, version = load_model_safe()
     if model is None:
         st.stop()
 
     airports_df = load_airports_data_safe()
+    if airports_df is None:
+        st.stop()
 
     # Sidebar
     with st.sidebar:
-        st.markdown("###  Model Information")
+        st.markdown("### 📊 Model Information")
         st.write(f"**Created:** {created_date}")
         st.write(f"**Version:** {version}")
         st.write(f"**Features:** {len(feature_columns) if feature_columns is not None else 'Unknown'}")
 
-        st.markdown("###  Weather Settings")
+        st.markdown("### 🌤️ Weather Settings")
         use_weather = st.checkbox("Use Real-time Weather Forecasts", value=True)
         show_analysis = st.checkbox("Show Weather Delay Analysis", value=True)
+        
+        # Display available airports
+        display_available_airports(airports_df)
 
     # Main content
-    st.markdown("###  Flight Details")
+    st.markdown("### ✈️ Flight Details")
 
     # Flight input form
     with st.form("flight_form"):
@@ -563,47 +615,50 @@ def main():
             flight_date = st.date_input("Flight Date", value=datetime.date.today() + datetime.timedelta(days=1))
             arrival_time = st.time_input("Scheduled Arrival", value=datetime.time(17, 0))
 
-        submitted = st.form_submit_button(" Predict Delay")
+        submitted = st.form_submit_button("🔮 Predict Delay")
 
     # Prediction results
     if submitted:
-        # Validate inputs
-        if len(origin) != 3 or len(dest) != 3:
-            st.error("Airport codes must be exactly 3 letters!")
-            st.stop()
-
-        if origin == dest:
-            st.error("Origin and destination cannot be the same!")
-            st.stop()
-
-        # Prepare input data
-        inputs = {
-            'origin': origin,
-            'dest': dest,
-            'airline': airline,
-            'date_str': flight_date.strftime("%Y-%m-%d"),
-            'scheduled_departure': departure_time.hour * 100 + departure_time.minute,
-            'scheduled_arrival': arrival_time.hour * 100 + arrival_time.minute
-        }
-
-        # Show progress
-        with st.spinner("Processing prediction and analyzing weather..."):
-            api_key = 'KZG5KUC6LL62Z5LHDDZ3TTGVC' if use_weather else None
-            
-            input_df, status, origin_weather, dest_weather = create_prediction_input(
-                inputs, encoders, feature_columns, api_key, airports_df
-            )
-
-            if input_df is None:
-                st.error(f"Error creating prediction input: {status}")
+        try:
+            # Validate inputs
+            if len(origin) != 3 or len(dest) != 3:
+                st.error("❌ Airport codes must be exactly 3 letters!")
                 st.stop()
 
-            # Make prediction
-            try:
+            if origin == dest:
+                st.error("❌ Origin and destination cannot be the same!")
+                st.stop()
+
+            # Validate airports exist in database
+            validate_airports(origin, dest, airports_df)
+
+            # Prepare input data
+            inputs = {
+                'origin': origin,
+                'dest': dest,
+                'airline': airline,
+                'date_str': flight_date.strftime("%Y-%m-%d"),
+                'scheduled_departure': departure_time.hour * 100 + departure_time.minute,
+                'scheduled_arrival': arrival_time.hour * 100 + arrival_time.minute
+            }
+
+            # Show progress
+            with st.spinner("Processing prediction and analyzing weather..."):
+                api_key = 'KZG5KUC6LL62Z5LHDDZ3TTGVC' if use_weather else None
+                
+                input_df, status, origin_weather, dest_weather = create_prediction_input(
+                    inputs, encoders, feature_columns, api_key, airports_df
+                )
+
+                if input_df is None:
+                    st.error(f"❌ Error creating prediction input: {status}")
+                    st.stop()
+
+                # Make prediction
                 prediction = model.predict(input_df)[0]
 
                 # Display results
-                st.markdown("###  Prediction Results")
+                st.markdown("### 📊 Prediction Results")
 
                 # Create visualization
                 fig = create_delay_visualization(prediction, airline, f"{origin} → {dest}")
@@ -613,13 +668,13 @@ def main():
                 if prediction > 0:
                     if prediction > 30:
                         result_class = "warning-box"
-                        severity = " Major Delay"
+                        severity = "⚠️ Major Delay"
                     elif prediction > 15:
                         result_class = "warning-box"
-                        severity = " Significant Delay"
+                        severity = "⚠️ Significant Delay"
                     else:
                         result_class = "info-box"
-                        severity = " Minor Delay"
+                        severity = "ℹ️ Minor Delay"
 
                     st.markdown(f"""
                     <div class="{result_class}">
@@ -630,7 +685,7 @@ def main():
                 else:
                     st.markdown(f"""
                     <div class="success-box">
-                        <h4> On-Time or Early Arrival</h4>
+                        <h4>✅ On-Time or Early Arrival</h4>
                         <p><strong>Flight {airline} {origin} → {dest}</strong> is predicted to arrive <strong>{abs(prediction):.1f} minutes early</strong> on {flight_date.strftime('%B %d, %Y')}.</p>
                     </div>
                     """, unsafe_allow_html=True)
@@ -645,18 +700,27 @@ def main():
                 elif use_weather:
                     st.markdown("""
                     <div class="info-box">
-                        <h4> Weather Information</h4>
+                        <h4>ℹ️ Weather Information</h4>
                         <p>Weather forecasts are not available for the selected airports or date. The prediction uses historical weather patterns.</p>
                     </div>
                     """, unsafe_allow_html=True)
 
-            except Exception as e:
-                st.error(f"Error making prediction: {str(e)}")
-                st.write("Please check that all required files are present and try again.")
+        except ValueError as e:
+            # Handle airport validation errors
+            st.markdown(f"""
+            <div class="error-box">
+                <h4>❌ Airport Validation Error</h4>
+                <p>{str(e)}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+        except Exception as e:
+            st.error(f"❌ Error making prediction: {str(e)}")
+            st.write("Please check that all required files are present and try again.")
 
     # Footer
     st.markdown("---")
-    st.markdown(" **Flight Delay Predictor with Weather Analysis** | Built with Streamlit & Machine Learning")
+    st.markdown("✈️ **Flight Delay Predictor with Weather Analysis** | Built with Streamlit & Machine Learning")
 
 
 if __name__ == "__main__":
