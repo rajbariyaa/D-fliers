@@ -112,10 +112,10 @@ def load_model_safe():
             model_package.get('version', 'Unknown')
         )
     except FileNotFoundError:
-        st.error("❌ Model file 'test02.pkl' not found. Please ensure the model file is in the correct directory.")
+        st.error("Model file 'test02.pkl' not found. Please ensure the model file is in the correct directory.")
         return None, None, None, None, None
     except Exception as e:
-        st.error(f"❌ Error loading model: {str(e)}")
+        st.error(f"Error loading model: {str(e)}")
         return None, None, None, None, None
 
 
@@ -124,14 +124,14 @@ def load_airports_data_safe():
     try:
         airports_df = pd.read_csv("streamlit/airports.csv")
         if airports_df.empty:
-            st.error("❌ Airports data file is empty. Please check the file content.")
+            st.error("Airports data file is empty. Please check the file content.")
             return None
         return airports_df
     except FileNotFoundError:
-        st.error("❌ Airports data file 'airports.csv' not found. This file is required for airport validation.")
+        st.error("Airports data file 'airports.csv' not found. This file is required for airport validation.")
         return None
     except Exception as e:
-        st.error(f"❌ Error loading airports data: {str(e)}")
+        st.error(f"Error loading airports data: {str(e)}")
         return None
 
 
@@ -397,11 +397,11 @@ def display_weather_analysis(origin_weather, dest_weather, origin_code, dest_cod
                     </div>
                     """, unsafe_allow_html=True)
             else:
-                st.markdown("✅ No significant weather issues detected")
+                st.markdown("No significant weather issues detected")
     else:
         st.markdown("""
         <div class="success-box">
-            <h4>✅ Favorable Weather Conditions</h4>
+            <h4>Favorable Weather Conditions</h4>
             <p>No significant weather factors identified that would cause delays. Weather conditions appear favorable for on-time operations.</p>
         </div>
         """, unsafe_allow_html=True)
@@ -564,7 +564,7 @@ def display_available_airports(airports_df):
         
         if not search_term:
             st.sidebar.write(f"... and {len(airports_df) - 20} more airports")
-            st.sidebar.write("💡 Use the search box to find specific airports")
+            st.sidebar.write("Use the search box to find specific airports")
 
 
 def main():
@@ -586,7 +586,7 @@ def main():
 
     # Sidebar
     with st.sidebar:
-        st.markdown("### 📊 Model Information")
+        st.markdown("### Model Information")
         st.write(f"**Created:** {created_date}")
         st.write(f"**Version:** {version}")
         st.write(f"**Features:** {len(feature_columns) if feature_columns is not None else 'Unknown'}")
@@ -615,18 +615,18 @@ def main():
             flight_date = st.date_input("Flight Date", value=datetime.date.today() + datetime.timedelta(days=1))
             arrival_time = st.time_input("Scheduled Arrival", value=datetime.time(17, 0))
 
-        submitted = st.form_submit_button("🔮 Predict Delay")
+        submitted = st.form_submit_button("Predict Delay")
 
     # Prediction results
     if submitted:
         try:
             # Validate inputs
             if len(origin) != 3 or len(dest) != 3:
-                st.error("❌ Airport codes must be exactly 3 letters!")
+                st.error("Airport codes must be exactly 3 letters!")
                 st.stop()
 
             if origin == dest:
-                st.error("❌ Origin and destination cannot be the same!")
+                st.error("Origin and destination cannot be the same!")
                 st.stop()
 
             # Validate airports exist in database
@@ -651,14 +651,14 @@ def main():
                 )
 
                 if input_df is None:
-                    st.error(f"❌ Error creating prediction input: {status}")
+                    st.error(f"Error creating prediction input: {status}")
                     st.stop()
 
                 # Make prediction
                 prediction = model.predict(input_df)[0]
 
                 # Display results
-                st.markdown("### 📊 Prediction Results")
+                st.markdown("###Prediction Results")
 
                 # Create visualization
                 fig = create_delay_visualization(prediction, airline, f"{origin} → {dest}")
@@ -685,7 +685,7 @@ def main():
                 else:
                     st.markdown(f"""
                     <div class="success-box">
-                        <h4>✅ On-Time or Early Arrival</h4>
+                        <h4> On-Time or Early Arrival</h4>
                         <p><strong>Flight {airline} {origin} → {dest}</strong> is predicted to arrive <strong>{abs(prediction):.1f} minutes early</strong> on {flight_date.strftime('%B %d, %Y')}.</p>
                     </div>
                     """, unsafe_allow_html=True)
@@ -709,13 +709,13 @@ def main():
             # Handle airport validation errors
             st.markdown(f"""
             <div class="error-box">
-                <h4>❌ Airport Validation Error</h4>
+                <h4> Airport Validation Error</h4>
                 <p>{str(e)}</p>
             </div>
             """, unsafe_allow_html=True)
             
         except Exception as e:
-            st.error(f"❌ Error making prediction: {str(e)}")
+            st.error(f"Error making prediction: {str(e)}")
             st.write("Please check that all required files are present and try again.")
 
     # Footer
